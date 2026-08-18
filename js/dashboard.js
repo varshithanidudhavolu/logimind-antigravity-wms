@@ -42,29 +42,29 @@ class DashboardModule {
       });
     }
 
-    // Create New Order Modal triggers
-    const openOrderBtns = document.querySelectorAll('.btn-open-create-order-modal, #btnOpenCreateOrderModal, #btnOpenCreateOrderModalTable');
-    openOrderBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+    // Global Event Delegation for Create Order & Modals
+    document.addEventListener('click', (e) => {
+      // Open Create Order Modal
+      if (e.target.closest('.btn-open-create-order-modal, #btnOpenCreateOrderModal, #btnOpenCreateOrderModalTable, [data-action="open-create-order"]')) {
+        e.preventDefault();
         this.openCreateOrderModal();
-      });
+      }
+
+      // Close Modals
+      if (e.target.closest('.btn-close-modal, .btn-cancel-modal, [data-action="close-modal"]')) {
+        e.preventDefault();
+        this.closeAllModals();
+      }
+
+      // Close on Backdrop Click
+      if (e.target.classList && e.target.classList.contains('modal-backdrop-glass')) {
+        e.target.classList.add('hidden');
+        e.target.classList.remove('flex');
+      }
     });
 
-    const closeOrderBtn = document.getElementById('btnCloseCreateOrderModal');
-    if (closeOrderBtn) {
-      closeOrderBtn.addEventListener('click', () => {
-        this.closeCreateOrderModal();
-      });
-    }
-
-    const cancelOrderBtn = document.getElementById('btnCancelCreateOrderModal');
-    if (cancelOrderBtn) {
-      cancelOrderBtn.addEventListener('click', () => {
-        this.closeCreateOrderModal();
-      });
-    }
-
-    const createOrderForm = document.getElementById('createOrderForm');
+    // Form submit listener
+    const createOrderForm = document.getElementById('formCreateOrder') || document.getElementById('createOrderForm');
     if (createOrderForm) {
       createOrderForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -72,57 +72,85 @@ class DashboardModule {
       });
     }
 
-    // Priority slider live update
-    const prioritySlider = document.getElementById('newOrderPriority');
-    const priorityVal = document.getElementById('newOrderPriorityVal');
-    if (prioritySlider && priorityVal) {
-      prioritySlider.addEventListener('input', (e) => {
-        const val = e.target.value;
-        const slaHours = val >= 90 ? '0.5h (Flash SLA)' : val >= 80 ? '2h (Expedited)' : val >= 60 ? '4h (Standard)' : '8h (Economy)';
-        priorityVal.textContent = `${val} &bull; ${slaHours}`;
+    // SLA Range Slider listener
+    const slaSlider = document.getElementById('newOrderSla');
+    const slaVal = document.getElementById('newOrderSlaVal');
+    if (slaSlider && slaVal) {
+      slaSlider.addEventListener('input', (e) => {
+        const mins = parseInt(e.target.value, 10);
+        slaVal.textContent = mins >= 60 ? `${(mins / 60).toFixed(1)} Hours (${mins} mins)` : `${mins} Minutes`;
       });
     }
   }
 
   openCreateOrderModal() {
-    window.soundEngine.playClick();
-    const modal = document.getElementById('createOrderModal');
+    if (window.soundEngine) window.soundEngine.playClick();
+    const modal = document.getElementById('modalCreateOrder') || document.getElementById('createOrderModal');
     const skuSelect = document.getElementById('newOrderSku');
-    if (!modal || !skuSelect) return;
+    if (!modal) return;
 
     // Populate SKUs dynamically from live inventory
-    const skus = window.WMSState.data.skus;
-    skuSelect.innerHTML = skus.map(sku => {
-      const avail = sku.onHand - sku.allocated;
-      return `
-        <option value="${sku.id}">
-          ${sku.id} - ${sku.name} (${sku.zone} / ${sku.aisle}) &bull; Avail: ${avail} / On-Hand: ${sku.onHand} &bull; $${sku.unitCost.toFixed(2)}
-        </option>
-      `;
-    }).join('');
+    if (skuSelect && window.WMSState) {
+      const skus = window.WMSState.data.skus || [];
+      skuSelect.innerHTML = skus.map(sku => {
+        const avail = Math.max(0, sku.onHand - (sku.allocated || 0));
+        return `
+          <option value="${sku.id}">
+            ${sku.id} - ${sku.name} (${sku.zone} / ${sku.aisle}) • Available: ${avail} / On-Hand: ${sku.onHand} • $${sku.unitCost.toFixed(2)}
+          </option>
+        `;
+      }).join('');
+    }
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    modal.style.display = 'flex';
   }
 
   closeCreateOrderModal() {
-    const modal = document.getElementById('createOrderModal');
+    const modal = document.getElementById('modalCreateOrder') || document.getElementById('createOrderModal');
     if (modal) {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      modal.style.display = 'none';
     }
   }
 
-  handleCreateOrderSubmit() {
-    const customer = document.getElementById('newOrderCustomer').value.trim() || 'Tesla Energy Hub';
-    const tier = document.getElementById('newOrderTier').value;
-    const skuId = document.getElementById('newOrderSku').value;
-    const qty = parseInt(document.getElementById('newOrderQty').value, 10) || 5;
-    const priority = parseInt(document.getElementById('newOrderPriority').value, 10) || 85;
-    const carrier = document.getElementById('newOrderCarrier') ? document.getElementById('newOrderCarrier').value : null;
-    const dest = document.getElementById('newOrderDest') ? document.getElementById('newOrderDest').value.trim() : 'Austin, TX - Gigafactory 1';
+  closeAllModals() {
+    const modals = document.querySelectorAll('#modalCreateOrder, #modalDamage, #modalReplenish, #modalManifest, #modalAssignDock, .modal-backdrop-glass');
+    modals.forEach(m => {
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+      m.style.display = 'none';
+    });
+  }
 
-    const slaHours = priority >= 90 ? 1 : priority >= 80 ? 2 : priority >= 60 ? 4 : 8;
+  handleCreateOrderSubmit() {
+    const customerInput = document.getElementById('newOrderCustomer');
+    const tierInput = document.getElementById('newOrderTier');
+    const skuInput = document.getElementById('newOrderSku');
+    const qtyInput = document.getElementById('newOrderQty');
+    const carrierInput = document.getElementById('newOrderCarrier');
+    const destInput = document.getElementById('newOrderDest');
+    const slaInput = document.getElementById('newOrderSla');
+
+    const customer = customerInput ? customerInput.value.trim() || 'Tesla Energy Hub' : 'Tesla Energy Hub';
+    const tier = tierInput ? tierInput.value : 'Enterprise Tier (Score: 80)';
+    const skuId = skuInput ? skuInput.value : 'SKU-101';
+    const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 2) : 2;
+    const carrier = carrierInput ? carrierInput.value : 'FedEx Priority';
+    const dest = destInput ? destInput.value.trim() || 'San Francisco Hub (Dock 02)' : 'San Francisco Hub (Dock 02)';
+
+    let priority = 80;
+    if (tier.includes('VIP')) priority = 95;
+    else if (tier.includes('Standard')) priority = 60;
+    else if (tier.includes('Enterprise')) priority = 80;
+
+    let slaHours = 2;
+    if (slaInput) {
+      const mins = parseInt(slaInput.value, 10) || 120;
+      slaHours = parseFloat((mins / 60).toFixed(1));
+    }
 
     const newOrder = window.WMSState.createOrder({
       customer,
@@ -137,13 +165,19 @@ class DashboardModule {
 
     this.closeCreateOrderModal();
 
+    // Reset form if available
+    const createOrderForm = document.getElementById('formCreateOrder') || document.getElementById('createOrderForm');
+    if (createOrderForm) createOrderForm.reset();
+
     // Sound and Green Toast
-    window.soundEngine.playSuccess();
-    window.showToast(
-      'Order Successfully Placed',
-      `Order ${newOrder.id} successfully placed! Staged in [Order Created] & allocated ${qty}x ${skuId}.`,
-      'emerald'
-    );
+    if (window.soundEngine) window.soundEngine.playSuccess();
+    if (typeof window.showToast === 'function') {
+      window.showToast(
+        'Order Successfully Placed',
+        `Order ${newOrder.id} staged in [Order Created] & allocated ${qty}x ${skuId}.`,
+        'emerald'
+      );
+    }
 
     // Refresh views and ensure user sees the order
     this.render();

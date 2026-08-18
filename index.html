@@ -297,7 +297,7 @@
               <p class="text-xs text-slate-400 mt-1">Real-time fulfillment metrics, SLA compliance, dynamic routing, and automated stock allocation.</p>
             </div>
             
-            <button id="btnOpenCreateOrderModal" class="btn-open-create-order-modal px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-emerald-400 hover:from-violet-500 hover:to-emerald-300 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-xl glow-emerald flex items-center gap-2 cursor-pointer">
+            <button id="btnOpenCreateOrderModal" onclick="if(window.dashboardModule){window.dashboardModule.openCreateOrderModal();}else{const m=document.getElementById('modalCreateOrder');if(m){m.classList.remove('hidden');m.classList.add('flex');m.style.display='flex';}}" class="btn-open-create-order-modal px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-emerald-400 hover:from-violet-500 hover:to-emerald-300 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-xl glow-emerald flex items-center gap-2 cursor-pointer">
               <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
               <span>+ Create New Order</span>
             </button>
@@ -464,7 +464,7 @@
                 <button onclick="window.app.switchTab('orders')" class="text-xs text-emerald-400 hover:underline font-medium cursor-pointer">
                   View Full Orders Tab →
                 </button>
-                <button id="btnOpenCreateOrderModalTable" class="btn-open-create-order-modal px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
+                <button id="btnOpenCreateOrderModalTable" onclick="if(window.dashboardModule){window.dashboardModule.openCreateOrderModal();}else{const m=document.getElementById('modalCreateOrder');if(m){m.classList.remove('hidden');m.classList.add('flex');m.style.display='flex';}}" class="btn-open-create-order-modal px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                   <span>+ Place Order</span>
                 </button>
