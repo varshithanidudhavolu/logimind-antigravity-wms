@@ -178,44 +178,59 @@ class Application {
   }
 }
 
-// Global Toast System
+// Global Glassmorphic Toast Notification System
 window.showToast = function(title, message, color = 'cyan') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
 
   const toast = document.createElement('div');
-  toast.className = `p-3.5 rounded-xl glass-panel-glow border border-${color}-500/40 shadow-2xl text-xs text-slate-200 pointer-events-auto transform translate-x-10 opacity-0 transition-all duration-300 flex items-start gap-3 bg-slate-950/90`;
+  toast.className = `relative overflow-hidden p-4 rounded-2xl backdrop-blur-2xl bg-slate-950/90 border border-${color}-500/50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] text-xs text-slate-200 pointer-events-auto transform translate-x-12 scale-95 opacity-0 transition-all duration-300 ease-out flex items-start gap-3.5 glow-${color} group`;
 
-  let iconSvg = `<span class="w-2 h-2 rounded-full bg-${color}-400 mt-1"></span>`;
-  if (color === 'emerald') iconSvg = `✓`;
-  else if (color === 'rose') iconSvg = `⚠️`;
-  else if (color === 'amber') iconSvg = `⚡`;
-  else if (color === 'purple') iconSvg = `🤖`;
+  let iconSvg = `<span class="led-${color}"></span>`;
+  let badgeBg = `bg-${color}-500/20 text-${color}-300 border-${color}-500/40`;
+
+  if (color === 'emerald') {
+    iconSvg = `<span class="led-emerald"></span>`;
+  } else if (color === 'rose') {
+    iconSvg = `<span class="led-rose"></span>`;
+  } else if (color === 'amber') {
+    iconSvg = `<span class="led-amber"></span>`;
+  } else if (color === 'purple') {
+    iconSvg = `<span class="led-purple"></span>`;
+  }
 
   toast.innerHTML = `
-    <div class="w-6 h-6 rounded-lg bg-${color}-500/20 text-${color}-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-${color}-500/30">
+    <div class="w-8 h-8 rounded-xl ${badgeBg} flex items-center justify-center font-bold text-sm shrink-0 border shadow-inner">
       ${iconSvg}
     </div>
-    <div class="flex-1 pr-1">
-      <div class="font-bold text-slate-100 text-xs">${title}</div>
-      <div class="text-slate-400 text-[11px] mt-0.5 leading-snug">${message}</div>
+    <div class="flex-1 pr-2 space-y-0.5">
+      <div class="font-bold text-slate-100 text-xs flex items-center justify-between">
+        <span>${title}</span>
+        <span class="text-[9px] font-mono text-slate-500">JUST NOW</span>
+      </div>
+      <div class="text-slate-300 text-[11px] leading-relaxed font-normal">${message}</div>
     </div>
+    <!-- Animated Toast Progress Timer Bar -->
+    <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-${color}-500 via-cyan-400 to-emerald-400 toast-progress-bar"></div>
   `;
 
   container.appendChild(toast);
 
   // Animate in
-  setTimeout(() => {
-    toast.classList.remove('translate-x-10', 'opacity-0');
-    toast.classList.add('translate-x-0', 'opacity-100');
-  }, 20);
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      toast.classList.remove('translate-x-12', 'scale-95', 'opacity-0');
+      toast.classList.add('translate-x-0', 'scale-100', 'opacity-100');
+    }, 15);
+  });
 
   // Auto-dismiss after 4.5 seconds
   setTimeout(() => {
-    toast.classList.add('translate-x-10', 'opacity-0');
+    toast.classList.remove('translate-x-0', 'scale-100', 'opacity-100');
+    toast.classList.add('translate-x-12', 'scale-95', 'opacity-0');
     setTimeout(() => {
       if (toast.parentElement) toast.parentElement.removeChild(toast);
-    }, 300);
+    }, 320);
   }, 4500);
 };
 
