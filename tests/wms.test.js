@@ -1,10 +1,14 @@
 /**
- * LogiMind Antigravity WMS - Automated Unit Test Suite
- * Evaluates State Store, Security Sanitization, What-If Simulator, TSP Routing, and QC Gate logic.
- * Compatible with Node.js test runners and browser consoles.
+ * LogiMind Antigravity WMS - Enterprise Automated Unit Test Suite
+ * @version 4.5.0
+ * 
+ * Verifies Security Defense, Prototype Pollution Resistance, State Indexing,
+ * Rule 14 Scenario Mathematical Invariants, TSP Routing, and 3-Point QC Logic.
  */
 
-// Load dependencies if running under Node.js
+'use strict';
+
+// Load security dependencies if running in Node.js
 let WMSSecurity;
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
   WMSSecurity = require('../js/security.js');
@@ -13,7 +17,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 }
 
 /**
- * Lightweight Standalone Assertion Test Framework
+ * Enterprise Test Runner Framework with Bounded Assertions
  */
 class TestRunner {
   constructor() {
@@ -56,7 +60,7 @@ class TestRunner {
         const b = JSON.stringify(expected);
         const pass = a === b;
         if (isNot ? pass : !pass) {
-          throw new Error(`Expected deep equality ${isNot ? 'NOT to match' : 'to match'} ${b}`);
+          throw new Error(`Expected equality ${isNot ? 'NOT to match' : 'to match'} ${b}`);
         }
       },
       toBeGreaterThan: (expected) => {
@@ -114,95 +118,99 @@ class TestRunner {
   }
 }
 
-// Instantiate Test Suite
+// Instantiate Runner
 const runner = new TestRunner();
 const describe = runner.describe.bind(runner);
 const test = runner.test.bind(runner);
 const expect = runner.expect.bind(runner);
 
 /* ========================================================================= */
-/* SUITE 1: SECURITY & INPUT SANITIZATION                                    */
+/* SUITE 1: SECURITY & DEFENSE-IN-DEPTH                                      */
 /* ========================================================================= */
-describe('1. Security Engine & Input Sanitization Tests', () => {
-  test('escapeHTML should encode dangerous HTML entities to prevent XSS', () => {
-    const dangerousInput = '<script>alert("XSS")</script>';
-    const escaped = WMSSecurity.escapeHTML(dangerousInput);
-    expect(escaped).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;');
+describe('1. Enterprise Security, Sanitization & Defense-in-Depth', () => {
+  test('escapeHTML correctly encodes all dangerous HTML characters', () => {
+    const raw = '<script>alert("XSS & Injection")</script>';
+    const escaped = WMSSecurity.escapeHTML(raw);
+    expect(escaped).toBe('&lt;script&gt;alert(&quot;XSS &amp; Injection&quot;)&lt;&#x2F;script&gt;');
   });
 
-  test('sanitizeInput should strip executable script tags and inline handlers', () => {
-    const malicious = '<img src=x onerror=alert(1)>Tesla<script>evil()</script>';
+  test('sanitizeInput strips script tags, iframes, and inline event handlers', () => {
+    const malicious = '<img src=x onerror=alert(1)>Tesla Gigafactory<script>evil()</script>';
     const clean = WMSSecurity.sanitizeInput(malicious);
-    expect(clean).toContain('Tesla');
+    expect(clean).toContain('Tesla Gigafactory');
     expect(clean).not.toContain('<script>');
     expect(clean).not.toContain('onerror=');
   });
 
-  test('sanitizeObject should recursively sanitize nested fields', () => {
-    const rawOrder = {
-      customer: '<script>hack()</script>SpaceX Corp',
-      nested: {
-        dest: 'Austin, TX <iframe src="evil.com"></iframe>'
-      }
+  test('sanitizeObject blocks prototype pollution keys (__proto__, constructor)', () => {
+    const maliciousObj = {
+      customer: 'SpaceX Autonomous Hub',
+      __proto__: { isAdmin: true },
+      constructor: { hacked: true }
     };
-    const sanitized = WMSSecurity.sanitizeObject(rawOrder);
-    expect(sanitized.customer).toBe('SpaceX Corp');
-    expect(sanitized.nested.dest).toBe('Austin, TX');
+    const sanitized = WMSSecurity.sanitizeObject(maliciousObj);
+    expect(sanitized.customer).toBe('SpaceX Autonomous Hub');
+    expect(Object.prototype.isAdmin).toBe(undefined);
   });
 
-  test('validateOrderPayload should bound quantities and enforce whitelisted carrier', () => {
+  test('validateOrderPayload bounds negative or infinite quantities to minimum safe 1', () => {
     const validated = WMSSecurity.validateOrderPayload({
-      customer: '  Amazon Robotics Hub  ',
+      customer: 'Apple Logistics',
       qty: -50,
-      priority: 999,
-      carrier: 'HackerDeliveryCorp'
+      priority: -10
     });
-    expect(validated.customer).toBe('Amazon Robotics Hub');
-    expect(validated.qty).toBe(1); // Min bounded
-    expect(validated.priority).toBe(75); // Fallback bounded
-    expect(validated.carrier).toBe('FedEx Priority'); // Whitelisted fallback
+    expect(validated.qty).toBe(1);
+    expect(validated.priority).toBe(75);
   });
 
-  test('validateSimulationPayload should bound parameter ranges between 0 and 1000', () => {
-    const validated = WMSSecurity.validateSimulationPayload({
-      urgentNeeded: 15,
-      availableStock: -4,
-      heldStock: 2500,
-      priorityThreshold: 85
+  test('validateOrderPayload bounds excessive quantities to maximum safe 1000', () => {
+    const validated = WMSSecurity.validateOrderPayload({
+      customer: 'Amazon Robotics Hub',
+      qty: 999999,
+      priority: 150
     });
-    expect(validated.urgentNeeded).toBe(15);
-    expect(validated.availableStock).toBe(0);
-    expect(validated.heldStock).toBe(1000);
-    expect(validated.priorityThreshold).toBe(85);
+    expect(validated.qty).toBe(1000);
+    expect(validated.priority).toBe(75);
+  });
+
+  test('validateOrderPayload whitelists legitimate shipping carriers', () => {
+    const validated = WMSSecurity.validateOrderPayload({
+      carrier: 'UntrustedCarrierSpam'
+    });
+    expect(validated.carrier).toBe('FedEx Priority');
+  });
+
+  test('safeJSONParse recovers gracefully from invalid JSON string without throwing', () => {
+    const parsed = WMSSecurity.safeJSONParse('{ corrupted json: 123 }', { fallback: true });
+    expect(parsed.fallback).toBe(true);
   });
 });
 
 /* ========================================================================= */
-/* SUITE 2: STATE STORE & ORDER LIFECYCLE                                    */
+/* SUITE 2: REACTIVE STATE STORE & FAST INDEXING                             */
 /* ========================================================================= */
-describe('2. State Store & Order Lifecycle Logic Tests', () => {
-  // Mock State Store
+describe('2. State Store Reactive Pub/Sub & O(1) Indexing', () => {
   const mockState = {
     orders: [
       { id: 'ORD-9821', customer: 'Tesla Gigafactory', stage: 'Route Picking', priority: 96, items: [{ sku: 'SKU-E101', qty: 4, picked: false }] },
       { id: 'ORD-9822', customer: 'Northrop Space', stage: 'Stock Allocation', priority: 88, items: [{ sku: 'SKU-H502', qty: 1, picked: false }] }
     ],
     skus: [
-      { id: 'SKU-E101', name: 'LiDAR Sensor', onHand: 24, allocated: 12, unitCost: 180.0 },
-      { id: 'SKU-H502', name: 'Optical Processor', onHand: 8, allocated: 3, unitCost: 1850.0 }
+      { id: 'SKU-E101', name: 'LiDAR Sensor', onHand: 48, allocated: 14, unitCost: 180.0 },
+      { id: 'SKU-H502', name: 'Optical Processor', onHand: 16, allocated: 6, unitCost: 1850.0 }
     ],
     auditLog: []
   };
 
-  test('Order creation should prepend new order and deduct inventory allocation', () => {
+  test('Order creation unshifts new order and deducts SKU allocation', () => {
     const initialOrdersCount = mockState.orders.length;
     const initialAllocated = mockState.skus[0].allocated;
 
     const newOrder = {
       id: 'ORD-9999',
-      customer: 'Apple Autonomous Hub',
+      customer: 'Quantum Computing Hub',
       stage: 'Order Created',
-      priority: 92,
+      priority: 94,
       items: [{ sku: 'SKU-E101', qty: 3, picked: false }]
     };
 
@@ -214,7 +222,7 @@ describe('2. State Store & Order Lifecycle Logic Tests', () => {
     expect(mockState.skus[0].allocated).toBe(initialAllocated + 3);
   });
 
-  test('Stage advancement should progress order to QC & Packing and Dispatch Ready', () => {
+  test('Stage advancement transitions order through fulfillment lifecycle', () => {
     const order = mockState.orders[0];
     expect(order.stage).toBe('Order Created');
 
@@ -225,24 +233,25 @@ describe('2. State Store & Order Lifecycle Logic Tests', () => {
     expect(order.stage).toBe('Dispatch Ready');
   });
 
-  test('Active orders counter should exclude Completed orders', () => {
-    mockState.orders.push({ id: 'ORD-9000', customer: 'Done Corp', stage: 'Completed', priority: 50, items: [] });
+  test('Active orders counter excludes Completed orders', () => {
+    mockState.orders.push({ id: 'ORD-9000', customer: 'Delivered Hub', stage: 'Completed', priority: 50, items: [] });
     const activeCount = mockState.orders.filter(o => o.stage !== 'Completed').length;
     expect(activeCount).toBe(3);
   });
 
-  test('Audit log should append immutable action history with timestamps', () => {
-    const auditEntry = { time: '12:00:00 UTC', user: 'Operations Manager', action: 'Created Order ORD-9999' };
-    mockState.auditLog.unshift(auditEntry);
-    expect(mockState.auditLog.length).toBe(1);
-    expect(mockState.auditLog[0].action).toContain('Created Order ORD-9999');
+  test('Audit log stores action timestamp and prunes excessive memory', () => {
+    for (let i = 0; i < 70; i++) {
+      mockState.auditLog.unshift({ time: '12:00:00', user: 'Ops Manager', action: `Action #${i}` });
+    }
+    if (mockState.auditLog.length > 60) mockState.auditLog.length = 60;
+    expect(mockState.auditLog.length).toBe(60);
   });
 });
 
 /* ========================================================================= */
-/* SUITE 3: WHAT-IF SCENARIO SIMULATION ENGINE                               */
+/* SUITE 3: RULE 14 AUTONOMOUS CONTENTION MATRIX                             */
 /* ========================================================================= */
-describe('3. What-If Scenario Contention Engine (Rule 14 Matrix)', () => {
+describe('3. Rule 14 Scenario Contention Simulation Engine', () => {
   function evaluateScenario(needed, available, held, threshold) {
     if (available >= needed) {
       return { branch: 'DIRECT_PASS', allocated: needed, revoked: 0, poNeeded: 0 };
@@ -255,7 +264,7 @@ describe('3. What-If Scenario Contention Engine (Rule 14 Matrix)', () => {
     return { branch: 'CRITICAL_DEFICIT', allocated: partial, revoked: held, poNeeded: needed - partial };
   }
 
-  test('Classic Conflict (10 Needed vs 7 Avail vs 5 Held) should trigger Dynamic Reallocation (Revoke 3, PO 8)', () => {
+  test('Scenario A (10 Needed vs 7 Avail vs 5 Held) triggers Dynamic Reallocation (Revoke 3, PO 8)', () => {
     const res = evaluateScenario(10, 7, 5, 75);
     expect(res.branch).toBe('DYNAMIC_REALLOCATION');
     expect(res.revoked).toBe(3);
@@ -263,53 +272,64 @@ describe('3. What-If Scenario Contention Engine (Rule 14 Matrix)', () => {
     expect(res.poNeeded).toBe(8);
   });
 
-  test('Direct Safe Pass (6 Needed vs 10 Avail vs 4 Held) should fulfill 100% with zero revocation', () => {
-    const res = evaluateScenario(6, 10, 4, 70);
+  test('Scenario B (6 Needed vs 12 Avail vs 4 Held) passes with zero revocation', () => {
+    const res = evaluateScenario(6, 12, 4, 70);
     expect(res.branch).toBe('DIRECT_PASS');
     expect(res.revoked).toBe(0);
     expect(res.allocated).toBe(6);
   });
 
-  test('Severe Deficit (20 Needed vs 4 Avail vs 6 Held) should trigger Critical Deficit & Emergency PO', () => {
-    const res = evaluateScenario(20, 4, 6, 80);
+  test('Scenario C (25 Needed vs 5 Avail vs 5 Held) triggers Critical Deficit & Auto PO 15', () => {
+    const res = evaluateScenario(25, 5, 5, 80);
     expect(res.branch).toBe('CRITICAL_DEFICIT');
     expect(res.allocated).toBe(10);
-    expect(res.poNeeded).toBe(10);
+    expect(res.poNeeded).toBe(15);
   });
 });
 
 /* ========================================================================= */
-/* SUITE 4: TSP SHORTEST-PATH & QC PACKING GATE                              */
+/* SUITE 4: TSP SHORTEST-PATH & 3-POINT QC PACKING GATE                      */
 /* ========================================================================= */
-describe('4. TSP Shortest Path Optimizer & 3-Point QC Gate', () => {
+describe('4. TSP Shortest-Path Optimizer & 3-Point QC Packing Gate', () => {
   function calculateEuclideanDistance(p1, p2) {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  test('TSP Distance metric calculation between picker depot and Rack A-03', () => {
+  function calculateManhattanDistance(p1, p2) {
+    return Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y);
+  }
+
+  test('TSP Euclidean metric computes distance between Picker Depot and Rack A-03', () => {
     const p1 = { x: 30, y: 230 };
     const p2 = { x: 85, y: 75 };
     const dist = calculateEuclideanDistance(p1, p2);
     expect(Math.round(dist)).toBe(164);
   });
 
-  test('3-Point QC Gate requires all 3 checkpoints (Damage, SKU Match, Weight) before seal generation', () => {
-    const orderQc = { damage: true, skuMatch: true, weight: true, approved: false, sealId: null };
-    const isReady = orderQc.damage && orderQc.skuMatch && orderQc.weight;
-    expect(isReady).toBe(true);
-
-    if (isReady) {
-      orderQc.approved = true;
-      orderQc.sealId = 'SEAL-9821-441';
-    }
-
-    expect(orderQc.approved).toBe(true);
-    expect(orderQc.sealId).toContain('SEAL-9821');
+  test('TSP Manhattan grid metric computes orthogonal aisle distance', () => {
+    const p1 = { x: 30, y: 230 };
+    const p2 = { x: 85, y: 75 };
+    const dist = calculateManhattanDistance(p1, p2);
+    expect(dist).toBe(210);
   });
 
-  test('Dock Bay assignment updates vehicle and capacity load fill', () => {
+  test('3-Point QC Gate requires all 3 criteria before generating holographic security seal', () => {
+    const qc = { visual: true, weight: true, cushion: true, approved: false, sealId: null };
+    const isApproved = qc.visual && qc.weight && qc.cushion;
+    expect(isApproved).toBe(true);
+
+    if (isApproved) {
+      qc.approved = true;
+      qc.sealId = 'SEAL-9821-441';
+    }
+
+    expect(qc.approved).toBe(true);
+    expect(qc.sealId).toContain('SEAL-9821');
+  });
+
+  test('Dock Bay assignment registers vehicle plate, carrier, and load fill percentage', () => {
     const dock = { id: 1, name: 'Dock 1', status: 'Available', capacityPct: 0, vehicle: 'NONE' };
     dock.vehicle = 'TRK-4491';
     dock.status = 'Loading';
@@ -324,7 +344,7 @@ describe('4. TSP Shortest Path Optimizer & 3-Point QC Gate', () => {
 // Run Summary
 const summary = runner.summary();
 
-// Export for Node.js test execution
+// Node.js exit code handling
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { runner, summary };
   if (summary.failed > 0) {

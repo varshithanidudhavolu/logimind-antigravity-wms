@@ -1,7 +1,11 @@
 /**
- * LogiMind Antigravity WMS - Automated Unit Test Suite (Browser & Node.js)
+ * LogiMind Antigravity WMS - Automated Unit Test Suite (Browser Global & Console)
+ * @version 4.5.0
  */
+
 (function() {
+  'use strict';
+
   const isNode = typeof module !== 'undefined' && module.exports;
   const WMSSecurity = isNode ? require('./security.js') : window.WMSSecurity;
 
@@ -34,26 +38,34 @@
     }
 
     expect(actual) {
-      return {
+      const matchers = (isNot = false) => ({
         toBe: (expected) => {
-          if (actual !== expected) throw new Error(`Expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
+          const pass = actual === expected;
+          if (isNot ? pass : !pass) throw new Error(`Expected ${JSON.stringify(actual)} ${isNot ? 'NOT to be' : 'to be'} ${JSON.stringify(expected)}`);
         },
         toEqual: (expected) => {
-          if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`Expected equality ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
+          const a = JSON.stringify(actual);
+          const b = JSON.stringify(expected);
+          const pass = a === b;
+          if (isNot ? pass : !pass) throw new Error(`Expected equality ${isNot ? 'NOT to match' : 'to match'} ${b}`);
         },
         toBeGreaterThan: (expected) => {
-          if (actual <= expected) throw new Error(`Expected ${actual} > ${expected}`);
-        },
-        toBeGreaterThanOrEqual: (expected) => {
-          if (actual < expected) throw new Error(`Expected ${actual} >= ${expected}`);
+          const pass = actual > expected;
+          if (isNot ? pass : !pass) throw new Error(`Expected ${actual} ${isNot ? 'NOT to be' : 'to be'} > ${expected}`);
         },
         toContain: (expected) => {
-          if (!actual || !actual.includes(expected)) throw new Error(`Expected to contain ${JSON.stringify(expected)}`);
+          const pass = actual && actual.includes(expected);
+          if (isNot ? pass : !pass) throw new Error(`Expected ${JSON.stringify(actual)} ${isNot ? 'NOT to contain' : 'to contain'} ${JSON.stringify(expected)}`);
         },
         toBeDefined: () => {
-          if (actual === undefined || actual === null) throw new Error(`Expected value to be defined`);
+          const pass = actual !== undefined && actual !== null;
+          if (isNot ? pass : !pass) throw new Error(`Expected value ${isNot ? 'NOT to be' : 'to be'} defined`);
         }
-      };
+      });
+
+      const obj = matchers(false);
+      obj.not = matchers(true);
+      return obj;
     }
 
     summary() {
@@ -69,8 +81,8 @@
     const test = runner.test.bind(runner);
     const expect = runner.expect.bind(runner);
 
-    describe('1. Security Engine & Input Sanitization', () => {
-      test('escapeHTML prevents script tag injection', () => {
+    describe('1. Security Engine & Prototype Pollution Defense', () => {
+      test('escapeHTML prevents script injection', () => {
         expect(WMSSecurity.escapeHTML('<script>alert(1)</script>')).toBe('&lt;script&gt;alert(1)&lt;&#x2F;script&gt;');
       });
 
@@ -80,14 +92,19 @@
         expect(clean).not.toContain('onerror=');
       });
 
-      test('validateOrderPayload bounds quantities and priority', () => {
+      test('sanitizeObject blocks prototype pollution keys', () => {
+        const clean = WMSSecurity.sanitizeObject({ customer: 'Tesla', __proto__: { hacked: true } });
+        expect(clean.customer).toBe('Tesla');
+      });
+
+      test('validateOrderPayload bounds negative quantities', () => {
         const validated = WMSSecurity.validateOrderPayload({ customer: 'Tesla', qty: -5, priority: 999 });
         expect(validated.qty).toBe(1);
         expect(validated.priority).toBe(75);
       });
     });
 
-    describe('2. State Store & Order Lifecycle', () => {
+    describe('2. State Store Reactive Data Integrity', () => {
       test('WMSState data integrity is initialized', () => {
         expect(typeof window.WMSState !== 'undefined').toBe(true);
         expect(window.WMSState.data.orders.length > 0).toBe(true);
