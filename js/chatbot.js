@@ -9,7 +9,7 @@ class ChatbotModule {
       {
         sender: 'ai',
         time: 'Just now',
-        text: `👋 **Greetings, Operations Lead.** I am **LogiBot AI**, your Antigravity Autonomous Warehouse Co-Pilot.\n\nI monitor **14 Decision Rules**, solve inventory deadlocks in **<2ms**, and orchestrate AGV swarm routing.\n\n*Click any prompt chip below or type a query to test my cognitive engine:*`
+        text: `👋 **Greetings, Operations Lead.** I am **LogiBot AI**, your Antigravity Autonomous Warehouse Co-Pilot.\n\nI monitor **14 Decision Rules**, resolve inventory deadlocks in **<2ms**, and orchestrate AGV swarm routing.\n\n*Click any prompt chip below or type a query to test my cognitive engine:*`
       }
     ];
   }
@@ -22,8 +22,8 @@ class ChatbotModule {
   bindEvents() {
     const triggerBtn = document.getElementById('btnToggleChatbot');
     const closeBtn = document.getElementById('btnCloseChatbot');
+    const chatForm = document.getElementById('chatbotForm');
     const chatInput = document.getElementById('chatbotInput');
-    const sendBtn = document.getElementById('btnSendChatMessage');
 
     if (triggerBtn) {
       triggerBtn.addEventListener('click', () => {
@@ -37,31 +37,36 @@ class ChatbotModule {
       });
     }
 
-    if (sendBtn && chatInput) {
-      sendBtn.addEventListener('click', () => {
+    if (chatForm) {
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         this.handleUserSend();
-      });
-
-      chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          this.handleUserSend();
-        }
       });
     }
 
-    // Prompt Chips
-    const chips = document.querySelectorAll('.chat-prompt-chip');
-    chips.forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        const query = e.currentTarget.dataset.query || e.currentTarget.textContent.trim();
+    // Global click delegation for chatbot toggle, close, and chips
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#btnToggleChatbot')) {
+        e.preventDefault();
+        this.toggleChat();
+      }
+
+      if (e.target.closest('#btnCloseChatbot')) {
+        e.preventDefault();
+        this.toggleChat(false);
+      }
+
+      const chip = e.target.closest('.chat-chip, .chat-prompt-chip');
+      if (chip) {
+        e.preventDefault();
+        const query = chip.dataset.query || chip.textContent.trim();
         this.processQuery(query);
-      });
+      }
     });
   }
 
   toggleChat(forceState = null) {
-    window.soundEngine.playClick();
+    if (window.soundEngine) window.soundEngine.playClick();
     this.isOpen = forceState !== null ? forceState : !this.isOpen;
 
     const drawer = document.getElementById('chatbotDrawer');
@@ -71,6 +76,7 @@ class ChatbotModule {
       if (this.isOpen) {
         drawer.classList.remove('hidden');
         drawer.classList.add('flex');
+        drawer.style.display = 'flex';
         this.unreadCount = 0;
         if (badge) badge.classList.add('hidden');
         const input = document.getElementById('chatbotInput');
@@ -78,6 +84,7 @@ class ChatbotModule {
       } else {
         drawer.classList.add('hidden');
         drawer.classList.remove('flex');
+        drawer.style.display = 'none';
       }
     }
   }
@@ -94,7 +101,7 @@ class ChatbotModule {
   }
 
   processQuery(query) {
-    window.soundEngine.playClick();
+    if (window.soundEngine) window.soundEngine.playClick();
 
     // Add user message
     this.messages.push({
@@ -104,12 +111,12 @@ class ChatbotModule {
     });
     this.renderMessages();
 
-    // Ensure chat is open
+    // Ensure chat drawer is open
     if (!this.isOpen) this.toggleChat(true);
 
     // Simulate AI thinking and reply
     setTimeout(() => {
-      window.soundEngine.playCompute();
+      if (window.soundEngine) window.soundEngine.playCompute();
       const answer = this.generateResponse(query);
       this.messages.push({
         sender: 'ai',
@@ -118,88 +125,106 @@ class ChatbotModule {
         actions: answer.actions || []
       });
       this.renderMessages();
-    }, 450);
+    }, 400);
   }
 
   generateResponse(query) {
     const q = query.toLowerCase();
+    const orders = (window.WMSState && window.WMSState.data.orders) ? window.WMSState.data.orders : [];
 
-    if (q.includes('conflict') || q.includes('10 vs 7 vs 5') || q.includes('reallocation')) {
+    if (q.includes('high priority') || q.includes('priority order') || q.includes('urgent')) {
+      const highOrders = orders.filter(o => o.priority >= 80);
       return {
-        text: `### 🧠 Autonomous Stock Conflict Resolution Matrix\n\n**Scenario Parameters:**\n- **Urgent Order Demand:** 10 units (Priority 96)\n- **Available Unallocated:** 7 units\n- **Low-Priority Order Held:** 5 units (Priority 35)\n\n**Execution Breakdown:**\n1. **Priority Rule Evaluation:** Priority 96 > Priority 35 (Threshold: 75).\n2. **Inventory Reallocation:** System revokes **3 units** from the low-priority order and combines with **7 unallocated units** to fulfill **100% (10 units)** of Urgent Order demand.\n3. **Backorder Mitigation:** Remaining 2 units left in low-priority order. Automated Purchase Order draft **#PO-702** created for 8 replacement units with expedited 24h delivery SLA.\n4. **Audit State:** Global tables updated in **1.2ms** with zero human intervention.`,
+        text: `### 🚨 High-Priority Active Orders (${highOrders.length} Found)\n\n` +
+          highOrders.map(o => `* **${o.id}** — **${o.customer}** | Priority: **${o.priority}** | Stage: \`${o.stage}\` | SLA: ⏱ **${o.slaTimer}**`).join('\n\n') +
+          `\n\n*All critical SLA timers are actively tracked in the dispatch queue.*`,
         actions: [
-          { label: '🚀 Open What-If Simulator', action: "window.app.switchTab('simulator')" }
+          { label: '📋 View Live Orders Queue', action: "window.app.switchTab('dashboard')" }
         ]
       };
     }
 
-    if (q.includes('bottleneck') || q.includes('zone a') || q.includes('traffic') || q.includes('aisle')) {
-      const activeBns = window.WMSState.data.bottlenecks.filter(b => !b.resolved);
+    if (q.includes('reroute') || q.includes('agv') || q.includes('traffic') || q.includes('bottleneck')) {
+      const activeBns = (window.WMSState && window.WMSState.data.bottlenecks) ? window.WMSState.data.bottlenecks.filter(b => !b.resolved) : [];
       if (activeBns.length > 0) {
+        const bn = activeBns[0];
         return {
-          text: `### ⚠️ Active Warehouse Bottleneck Telemetry\n\n**Radar Alert [${activeBns[0].id}]:** ${activeBns[0].title}\n- **Impact:** ${activeBns[0].delay} picking delay\n- **Root Cause:** AGV-03 & AGV-07 intersection contention\n- **Recommended Resolution:** Engage Autonomous Dynamic Bypass route C-3 around Zone B.`,
+          text: `### ⚠️ Active Warehouse Bottleneck [${bn.id}]\n\n* **Location:** ${bn.title}\n* **Impact:** ${bn.delay} picking lead time delay\n* **Root Cause:** AGV swarm intersection lock.\n\n*Engaging autonomous dynamic bypass routing via Bypass Corridor C-3.*`,
           actions: [
-            { label: '⚡ Auto-Reroute AGVs Now', action: "window.WMSState.resolveBottleneck('" + activeBns[0].id + "'); window.showToast('Resolved', 'AGVs successfully rerouted.', 'emerald');" }
+            { label: '⚡ Execute Auto-Reroute Now', action: "window.WMSState.resolveBottleneck('" + bn.id + "'); if(typeof window.showToast==='function') window.showToast('Bottleneck Resolved', 'AGVs successfully rerouted.', 'emerald');" }
           ]
         };
       } else {
         return {
-          text: `### 🟢 Radar Clear\n\nAll AGV paths, pick aisles, and QC workstations are currently running at optimal velocity. Zero contention locks detected.`,
+          text: `### 🟢 Swarm AGV Telemetry: Optimal\n\nAll 12 Swarm AGVs and aisle paths are operating with **zero congestion** at 100% velocity. All bypass channels on standby.`,
           actions: []
         };
       }
     }
 
-    if (q.includes('damaged') || q.includes('missing') || q.includes('spill') || q.includes('broken')) {
+    if (q.includes('inventory') || q.includes('stock') || q.includes('sku') || q.includes('buffer')) {
+      const skus = (window.WMSState && window.WMSState.data.skus) ? window.WMSState.data.skus : [];
+      const lowStock = skus.filter(s => (s.onHand - s.allocated) <= s.safetyBuffer);
       return {
-        text: `### 🛡️ Damaged / Missing Item Exception Protocol\n\nWhen a warehouse operator reports a damaged SKU:\n1. **Instant Stock Decrement:** \`onHand\` quantity is immediately deducted from the physical rack bin.\n2. **Safety Threshold Check:** If \`onHand < safetyBuffer\`, the system instantly triggers an **Emergency Reorder Recommendation PO** with suggested economic order quantity (EOQ).\n3. **Downstream Dependency Recalculation:** Active orders requiring this SKU are evaluated against Priority Scores; lower-priority orders are queued for backorder.\n4. **Audit Logging:** Incident is timestamped with root cause (e.g. Forklift, Leak, Expiry).`,
+        text: `### 📦 Live Inventory & Safety Buffer Telemetry\n\n* **Total Tracked SKUs:** ${skus.length} Items\n* **Zone Health:** Zones A, B, C, D at 84.2% nominal density\n* **Safety Buffer Alerts:** ${lowStock.length > 0 ? lowStock.map(s => `⚠️ **${s.id}** (${s.name}): Avail ${s.onHand - s.allocated} / Buffer ${s.safetyBuffer}`).join(', ') : 'All SKUs above minimum threshold'}\n\n*Automated Purchase Requisitions are configured for safety stock recovery.*`,
         actions: [
-          { label: '📦 Open Damage Reporter', action: "window.inventoryModule.openDamageModal()" }
+          { label: '📦 Open Inventory & Heatmap', action: "window.app.switchTab('inventory')" }
         ]
       };
     }
 
-    if (q.includes('carrier') || q.includes('fedex') || q.includes('dhl') || q.includes('bluedart')) {
+    if (q.includes('rule 14') || q.includes('rule') || q.includes('rules')) {
       return {
-        text: `### 🚚 Multi-Carrier AI Optimization Matrix\n\n- **FedEx Priority:** Best for Domestic Expedited SLA (<14 hrs transit, 99.1% reliability, $12.50/kg).\n- **DHL Express:** Best for Cryo-cooled & High-Value processors ($14.20/kg, 12 hrs global customs fast-track).\n- **BlueDart Logistics:** Best for cost-optimized domestic volume ($8.40/kg, 24 hrs transit).`,
+        text: `### 📜 Antigravity Decision Rule 14: Autonomous Inventory Conflict Resolution\n\n* **Trigger:** Multiple orders contending for scarce SKU stock.\n* **Execution:** If \`Order_A.Priority > Order_B.Priority\` and Order_B is held in buffer, the system automatically revokes up to 100% of required allocation from Order_B to satisfy Order_A.\n* **PO Mitigation:** Automatically drafts a 24h expedited Purchase Order to replenish revoked stock with **zero human intervention**.`,
         actions: [
-          { label: '📋 View Dock Doors & Manifest', action: "window.app.switchTab('dispatch')" }
+          { label: '🧠 Test in What-If Simulator', action: "window.app.switchTab('simulator')" }
         ]
       };
     }
 
-    if (q.includes('route') || q.includes('picking') || q.includes('tsp') || q.includes('shortest')) {
+    if (q.includes('bay') || q.includes('dock') || q.includes('carrier') || q.includes('truck')) {
+      const docks = (window.WMSState && window.WMSState.data.docks) ? window.WMSState.data.docks : [];
       return {
-        text: `### 🗺️ Traveling Salesperson (TSP) Route Optimizer\n\nThe Antigravity pathfinding engine computes the exact minimum Manhattan walking distance across Racks A, B, C, and D.\n- Reduces picker transit time by **38.4%**.\n- Groups co-located SKUs into a single pick run.\n- Integrates with the simulated handheld Barcode Scanner.`,
+        text: `### 🚛 Dock Doors & Fleet Status (4 Active Bays)\n\n` +
+          docks.map(d => `* **${d.name}:** Vehicle \`${d.vehicle}\` | Carrier: **${d.carrier}** | Load Fill: **${d.capacityPct}%** | ETA: \`${d.eta}\``).join('\n\n') +
+          `\n\n*All outbound carriers (FedEx, DHL, BlueDart) are monitored with live SLA tracking.*`,
         actions: [
-          { label: '📍 View Pick Route Grid', action: "window.app.switchTab('picking')" }
+          { label: '🚛 View Dock Doors & Fleet', action: "window.app.switchTab('dispatch')" }
         ]
       };
     }
 
-    // Default intelligent response
+    // Default fallback intelligence response
     return {
-      text: `### 🤖 LogiBot Cognitive Assistant\n\nI have analyzed your query: *"**${query}**"*.\n\n**Current Warehouse Health:**\n- **Active Orders:** ${window.WMSState.data.systemStats.activeOrdersCount}\n- **SLA Compliance:** ${window.WMSState.data.systemStats.slaCompliancePct}%\n- **Space Utilization:** ${window.WMSState.data.systemStats.spaceUtilizationPct}%\n- **Decision Engine Rules Active:** 14 Rules\n\nSelect any module from the navigation sidebar or ask me about stock reallocations, picking routes, or carrier selection.`,
+      text: `### 🤖 LogiMind Copilot Intelligence\n\nProcessed query: *"${query}"*\n\n* System State: **Optimal Nominal (12ms Latency)**\n* Active Decision Engine: **Antigravity-v4.2**\n* All 7 Warehouse subsystems are synchronized and responsive.`,
       actions: [
-        { label: '📊 View Executive Dashboard', action: "window.app.switchTab('dashboard')" }
+        { label: '📊 View Executive Overview', action: "window.app.switchTab('dashboard')" }
       ]
     };
   }
 
   renderMessages() {
-    const container = document.getElementById('chatbotMessagesList');
+    const container = document.getElementById('chatbotMessages');
     if (!container) return;
 
-    container.innerHTML = this.messages.map((m, idx) => {
-      const isAi = m.sender === 'ai';
-      const parsedText = this.parseMarkdown(m.text);
+    container.innerHTML = this.messages.map(msg => {
+      const isAi = msg.sender === 'ai';
 
-      let actionButtons = '';
-      if (m.actions && m.actions.length > 0) {
-        actionButtons = `
-          <div class="mt-3 pt-2 border-t border-slate-700/50 flex flex-wrap gap-2">
-            ${m.actions.map(act => `
-              <button onclick="${act.action}" class="px-2.5 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold transition-all cursor-pointer">
+      // Parse markdown bold and headers
+      let formattedText = msg.text
+        .replace(/### (.*?)\n/g, '<h4 class="font-bold text-xs text-cyan-300 mt-1 mb-0.5">$1</h4>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-100">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em class="text-slate-300">$1</em>')
+        .replace(/`(.*?)`/g, '<code class="px-1 py-0.2 rounded bg-slate-950 font-mono text-[10px] text-emerald-400 border border-slate-800">$1</code>')
+        .replace(/\n\n/g, '<br/><br/>')
+        .replace(/\n/g, '<br/>');
+
+      let actionsHtml = '';
+      if (msg.actions && msg.actions.length > 0) {
+        actionsHtml = `
+          <div class="mt-2.5 pt-2 border-t border-slate-800 flex flex-wrap gap-1.5">
+            ${msg.actions.map(act => `
+              <button onclick="${act.action}" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-[10px] font-bold transition-all cursor-pointer">
                 ${act.label}
               </button>
             `).join('')}
@@ -208,43 +233,20 @@ class ChatbotModule {
       }
 
       return `
-        <div class="flex gap-2.5 ${isAi ? 'justify-start' : 'justify-end'}">
-          ${isAi ? `
-            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-slate-950 font-extrabold text-xs shrink-0 shadow-md">
-              🤖
-            </div>
-          ` : ''}
-
-          <div class="max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed ${
-            isAi 
-              ? 'bg-slate-900/90 text-slate-200 border border-slate-700/70' 
-              : 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-slate-950 font-medium'
-          }">
-            <div class="flex justify-between items-center text-[10px] opacity-70 mb-1 font-mono">
-              <span>${isAi ? 'LogiBot AI' : 'You'}</span>
-              <span>${m.time}</span>
-            </div>
-            <div>${parsedText}</div>
-            ${actionButtons}
+        <div class="flex items-start gap-2.5 ${isAi ? '' : 'flex-row-reverse'} animate-fadeIn">
+          <div class="w-6 h-6 rounded-lg ${isAi ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-purple-500/20 text-purple-300 border border-purple-500/40'} flex items-center justify-center text-xs shrink-0">
+            ${isAi ? '🤖' : '👤'}
+          </div>
+          <div class="max-w-[85%] p-3 rounded-2xl ${isAi ? 'bg-slate-900/90 border border-slate-800 text-slate-200' : 'bg-purple-600/30 border border-purple-500/40 text-slate-100'} shadow-md">
+            <div class="text-[11px] leading-relaxed">${formattedText}</div>
+            ${actionsHtml}
+            <div class="text-[9px] font-mono text-slate-500 mt-1 text-right">${msg.time}</div>
           </div>
         </div>
       `;
     }).join('');
 
-    // Scroll to bottom
     container.scrollTop = container.scrollHeight;
-  }
-
-  parseMarkdown(text) {
-    if (!text) return '';
-    return text
-      .replace(/### (.*?)\n/g, '<div class="text-xs font-bold font-heading text-cyan-300 mt-2 mb-1">$1</div>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="text-slate-300">$1</em>')
-      .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-800 text-cyan-300 font-mono text-[11px]">$1</code>')
-      .replace(/\n\n/g, '<div class="my-1.5"></div>')
-      .replace(/\n- /g, '<br>&bull; ')
-      .replace(/\n/g, '<br>');
   }
 }
 

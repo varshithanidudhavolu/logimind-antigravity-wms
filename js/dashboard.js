@@ -11,11 +11,13 @@ class DashboardModule {
     this.render();
 
     // Subscribe to state changes
-    window.WMSState.subscribe((event, payload, state) => {
-      if (['ORDER_UPDATED', 'ORDER_SELECTED', 'ORDER_DISPATCHED', 'BOTTLENECK_RESOLVED', 'FILTER_CHANGED', 'SEARCH_CHANGED', 'STATS_UPDATED'].includes(event)) {
-        this.render();
-      }
-    });
+    if (window.WMSState) {
+      window.WMSState.subscribe((event, payload, state) => {
+        if (['ORDER_UPDATED', 'ORDER_CREATED', 'INVENTORY_UPDATED', 'ORDER_SELECTED', 'ORDER_DISPATCHED', 'BOTTLENECK_RESOLVED', 'FILTER_CHANGED', 'SEARCH_CHANGED', 'STATS_UPDATED'].includes(event)) {
+          this.render();
+        }
+      });
+    }
   }
 
   bindEvents() {
