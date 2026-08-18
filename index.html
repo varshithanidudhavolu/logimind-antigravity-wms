@@ -964,25 +964,46 @@
               </h2>
               <p class="text-xs text-slate-400 mt-1">Dock bay scheduling, AI carrier matrix rate matching, printable shipping manifests, and digital POD signature pad.</p>
             </div>
+            
+            <button id="btnAiCarrierMatch" class="px-4 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer">
+              <span>⚡ AI Auto-Match Carrier</span>
+            </button>
           </div>
 
-          <!-- 4 Live Dock Doors Grid -->
+          <!-- 1. Top Section: 4 Live Dock Doors Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="dockDoorsContainer">
             <!-- Populated dynamically -->
           </div>
 
-          <!-- Carrier Matrix & Airbill Manifest -->
+          <!-- 2. Middle Section: Dynamic AI Carrier Selection & Optimization Matrix -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 class="text-xs uppercase tracking-wider text-slate-300 font-bold font-mono">Dynamic AI Carrier Allocation Matrix</h3>
+                <p class="text-[11px] text-slate-400">Real-time SLA routing and contract freight cost comparison</p>
+              </div>
+              <span class="text-xs font-mono text-cyan-300 px-2.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">SLA &amp; Cost Optimized</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="carrierMatrixList">
+              <!-- Populated dynamically / fallback cards -->
+            </div>
+          </div>
+
+          <!-- 3. Bottom Section: Staged Orders (7 cols) & Digital POD Signature (5 cols) -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left: Dynamic AI Carrier Rate Matrix (7 cols) -->
+            <!-- Left: Orders Staged for Final Dispatch (7 cols) -->
             <div class="lg:col-span-7 glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
               <div class="flex items-center justify-between">
-                <h3 class="text-xs uppercase tracking-wider text-slate-300 font-bold font-mono">Dynamic AI Carrier Allocation Matrix</h3>
-                <span class="text-[11px] text-slate-400 font-mono">SLA & Cost Optimized</span>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xs uppercase tracking-wider text-slate-300 font-bold font-mono">Orders Staged for Final Dispatch</h3>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Ready for Carrier</span>
+                </div>
               </div>
 
-              <div class="space-y-3" id="carrierMatrixList">
-                <!-- Populated dynamically -->
+              <div class="space-y-3" id="dispatchReadyOrdersList">
+                <!-- Staged orders rendered dynamically -->
               </div>
             </div>
 
@@ -993,23 +1014,23 @@
                 <span class="text-[11px] font-mono text-emerald-400">Driver Signature</span>
               </div>
 
-              <div class="space-y-2 text-xs">
+              <div class="space-y-3 text-xs">
                 <div class="flex justify-between text-slate-400">
                   <span>Sign on the canvas below:</span>
-                  <button id="btnClearSignature" class="text-rose-400 hover:underline cursor-pointer">Clear</button>
+                  <button id="btnClearSignature" class="text-rose-400 hover:underline cursor-pointer">Clear Canvas</button>
                 </div>
                 
                 <div class="relative w-full h-36 rounded-xl bg-slate-950 border border-slate-700 overflow-hidden">
                   <canvas id="signatureCanvas" class="w-full h-full block cursor-crosshair"></canvas>
                   <div class="absolute bottom-1 right-2 text-[10px] font-mono text-slate-600 pointer-events-none">
-                    E-Signature Pad
+                    E-Signature Pad (Antigravity-POD)
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2 pt-2">
-                  <input id="podDriverName" type="text" placeholder="Driver Full Name..." class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-amber-400">
-                  <button id="btnSignAndDispatch" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all cursor-pointer">
-                    Sign & Dispatch
+                <div class="flex items-center gap-2 pt-1">
+                  <input id="podDriverName" type="text" placeholder="Driver Full Name (e.g. John Doe)..." class="flex-1 px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-amber-400">
+                  <button id="btnSignAndDispatch" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs transition-all shadow-lg cursor-pointer">
+                    Sign &amp; Dispatch
                   </button>
                 </div>
               </div>
