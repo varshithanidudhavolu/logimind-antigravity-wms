@@ -11,25 +11,39 @@ class Application {
     this.initClock();
     this.initToastContainer();
 
-    // Initialize all modules in sequence
-    window.landingModule.init();
-    window.dashboardModule.init();
-    window.scenarioSimulator.init();
-    window.inventoryModule.init();
-    window.pickingModule.init();
-    window.dispatchModule.init();
-    window.analyticsModule.init();
-    window.chatbotModule.init();
+    // Initialize all modules in sequence with fault tolerance
+    const modules = [
+      { name: 'landingModule', instance: window.landingModule },
+      { name: 'dashboardModule', instance: window.dashboardModule },
+      { name: 'scenarioSimulator', instance: window.scenarioSimulator },
+      { name: 'inventoryModule', instance: window.inventoryModule },
+      { name: 'pickingModule', instance: window.pickingModule },
+      { name: 'dispatchModule', instance: window.dispatchModule },
+      { name: 'analyticsModule', instance: window.analyticsModule },
+      { name: 'chatbotModule', instance: window.chatbotModule }
+    ];
 
-    // Subscribe to state changes
-    window.WMSState.subscribe((event, payload, state) => {
-      if (event === 'VIEW_CHANGED') {
-        this.updateSidebarUI(payload);
-      }
-      if (['AUDIT_LOGGED', 'INVENTORY_UPDATED', 'ORDER_UPDATED'].includes(event)) {
-        this.renderAuditLog();
+    modules.forEach(({ name, instance }) => {
+      try {
+        if (instance && typeof instance.init === 'function') {
+          instance.init();
+        }
+      } catch (err) {
+        console.error(`Error initializing module [${name}]:`, err);
       }
     });
+
+    // Subscribe to state changes
+    if (window.WMSState) {
+      window.WMSState.subscribe((event, payload, state) => {
+        if (event === 'VIEW_CHANGED') {
+          this.updateSidebarUI(payload);
+        }
+        if (['AUDIT_LOGGED', 'INVENTORY_UPDATED', 'ORDER_UPDATED', 'ORDER_CREATED'].includes(event)) {
+          this.renderAuditLog();
+        }
+      });
+    }
 
     this.renderAuditLog();
   }

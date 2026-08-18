@@ -135,11 +135,11 @@
 
       <!-- Enter Environment Primary Button -->
       <div class="pt-4">
-        <button id="btnEnterDemo" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-cyan-400 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-slate-950 font-extrabold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-2xl glow-cyan flex items-center gap-3 mx-auto cursor-pointer">
+        <button id="btnEnterDemo" onclick="if(window.landingModule){window.landingModule.enterApp();}else{document.getElementById('landingScreen').style.display='none';document.getElementById('appContainer').style.display='flex';document.getElementById('appContainer').classList.remove('hidden');}" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-emerald-400 hover:from-violet-500 hover:to-emerald-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-2xl glow-emerald flex items-center gap-3 mx-auto cursor-pointer font-chakra">
           <span>ENTER DEMO ENVIRONMENT</span>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </button>
-        <p class="text-[11px] font-mono text-slate-500 mt-3">Pressing button initializes reactive state store, Chart.js telemetry, and Web Audio synthesis.</p>
+        <p class="text-[11px] font-tech text-slate-400 mt-3">Pressing button or selecting a role card initializes reactive state store, Chart.js telemetry, and Web Audio synthesis.</p>
       </div>
 
     </div>
@@ -148,6 +148,8 @@
   <!-- ========================================================================= -->
   <!-- MAIN APPLICATION SHELL (SIDEBAR + TOPBAR + CONTENT VIEWCONTAINERS)        -->
   <!-- ========================================================================= -->
+  <div id="appContainer" class="hidden min-h-screen flex flex-col opacity-0 transition-opacity duration-500">
+    
     <!-- TOP TACTICAL COMMAND BANNER -->
     <div class="h-6 bg-gradient-to-r from-violet-950/90 via-slate-950/95 to-emerald-950/90 border-b border-violet-500/30 flex items-center justify-between px-4 text-[10px] font-tech text-slate-400 tracking-wider z-50">
       <div class="flex items-center gap-2">
