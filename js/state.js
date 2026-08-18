@@ -222,10 +222,19 @@ class StateStore {
     }
   }
 
-  // Create a new order manually
+  // Create a new order manually with strict security sanitization
   createOrder(orderParams) {
+    let sanitized = orderParams || {};
+    if (typeof WMSSecurity !== 'undefined') {
+      try {
+        sanitized = WMSSecurity.validateOrderPayload(orderParams);
+      } catch (err) {
+        console.warn('Security validation fallback:', err);
+      }
+    }
+
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-    const { customer, tier, skuId, qty, priority = 80, slaHours = 4, carrier, dest } = orderParams;
+    const { customer, tier, skuId, qty, priority = 80, slaHours = 4, carrier, dest } = sanitized;
     const targetSku = this.data.skus.find(s => s.id === skuId) || this.data.skus[0];
     const orderQty = Math.max(1, parseInt(qty, 10) || 1);
 

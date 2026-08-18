@@ -1,0 +1,22 @@
+{
+  "name": "logimind-antigravity-wms",
+  "version": "4.2.0",
+  "description": "LogiMind Antigravity WMS - Autonomous AI-Powered Warehouse Management System",
+  "main": "js/app.js",
+  "scripts": {
+    "test": "node tests/wms.test.js",
+    "test:coverage": "node tests/wms.test.js --coverage",
+    "start": "python -m http.server 8080"
+  },
+  "keywords": [
+    "wms",
+    "warehouse-management",
+    "antigravity",
+    "autonomous-logistics",
+    "ai-copilot",
+    "tsp-optimization",
+    "glassmorphism"
+  ],
+  "author": "LogiMind Engineering Team",
+  "license": "MIT"
+}

@@ -6,6 +6,11 @@
   <title>LogiMind Antigravity WMS - Autonomous Warehouse Co-Pilot</title>
   <meta name="description" content="LogiMind Antigravity WMS - Next-Gen Autonomous Decision & Fulfillment Co-Pilot. Real-time stock reallocation, TSP shortest-path picking, and dynamic carrier matrix.">
   
+  <!-- Security Headers & Content Security Policy (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -44,15 +49,20 @@
 </head>
 <body class="bg-obsidian text-slate-100 min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200">
 
+  <!-- Accessibility Skip Navigation Link -->
+  <a href="#mainContent" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-emerald-500 focus:text-slate-950 focus:rounded-xl focus:font-bold focus:shadow-2xl">
+    Skip to Main Content
+  </a>
+
   <!-- ========================================================================= -->
   <!-- SECTION 0: LANDING PAGE & ROLE SELECTION (WELCOME SCREEN)                 -->
   <!-- ========================================================================= -->
-  <div id="landingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-obsidian bg-radial-gradient transition-all duration-500 overflow-y-auto">
+  <div id="landingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-obsidian bg-radial-gradient transition-all duration-500 overflow-y-auto" role="region" aria-label="Welcome and Role Selection Screen">
     <div class="max-w-4xl w-full text-center space-y-8 my-auto py-8">
       
       <!-- Top Status Pill -->
       <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-emerald-300 text-xs font-mono glow-emerald">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
         <span class="font-bold text-emerald-400">System Online</span>
         <span class="text-slate-500">•</span>
         <span>14 Decision Rules Active</span>
@@ -66,15 +76,15 @@
           LogiMind Antigravity WMS
         </h1>
         <p class="text-base md:text-lg text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
-          Autonomous Warehouse Decision & Fulfillment Co-Pilot. Real-time stock reallocation, shortest-path TSP routing, dynamic carrier matching, and sub-millisecond conflict resolution.
+          Autonomous Warehouse Decision &amp; Fulfillment Co-Pilot. Real-time stock reallocation, shortest-path TSP routing, dynamic carrier matching, and sub-millisecond conflict resolution.
         </p>
       </div>
 
       <!-- Role Selection Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left pt-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left pt-4" role="radiogroup" aria-label="Select Warehouse Operator Role">
         <!-- Role 1: Operations Manager -->
-        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-emerald-400 bg-emerald-500/15 glow-emerald transition-all hover:-translate-y-1 duration-300 group" data-role="Operations Manager">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-emerald-400 bg-emerald-500/15 glow-emerald transition-all hover:-translate-y-1 duration-300 group" data-role="Operations Manager" role="radio" aria-checked="true" tabindex="0" aria-label="Select Operations Manager Role">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform" aria-hidden="true">
             ⚡
           </div>
           <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-emerald-300 transition-colors">Operations Manager</h3>
@@ -88,8 +98,8 @@
         </div>
 
         <!-- Role 2: Floor Picker Operator -->
-        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-800 bg-slate-950/60 transition-all hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-500/10 duration-300 group" data-role="Floor Picker Operator">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-800 bg-slate-950/60 transition-all hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-500/10 duration-300 group" data-role="Floor Picker Operator" role="radio" aria-checked="false" tabindex="0" aria-label="Select Floor Picker Operator Role">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform" aria-hidden="true">
             📦
           </div>
           <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-emerald-300 transition-colors">Floor Picker Operator</h3>
@@ -97,22 +107,22 @@
             Traveling Salesperson shortest-path map, interactive Barcode/QR scanner, and 3-point QC packing station.
           </p>
           <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-emerald-400">
-            <span>PICK & PACK HUB</span>
+            <span>PICK &amp; PACK HUB</span>
             <span>→</span>
           </div>
         </div>
 
         <!-- Role 3: Dispatch Supervisor -->
-        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-800 bg-slate-950/60 transition-all hover:-translate-y-1 hover:border-violet-500/50 hover:bg-violet-500/10 duration-300 group" data-role="Dispatch Supervisor">
-          <div class="w-12 h-12 rounded-xl bg-violet-500/20 border border-violet-500/40 flex items-center justify-center text-violet-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
-            🚚
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-800 bg-slate-950/60 transition-all hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-500/10 duration-300 group" data-role="Dispatch Supervisor" role="radio" aria-checked="false" tabindex="0" aria-label="Select Dispatch Supervisor Role">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform" aria-hidden="true">
+            🚛
           </div>
-          <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-violet-300 transition-colors">Dispatch Supervisor</h3>
+          <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-emerald-300 transition-colors">Dispatch Supervisor</h3>
           <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-            Live Dock Doors 1-4, AI Carrier Matrix (FedEx, DHL, BlueDart), Shipping Manifest Generator, and Digital POD Signature pad.
+            Live dock bays 1-4, AI carrier rate matrix (FedEx/DHL/BlueDart), shipping manifest generator, and digital POD signature pad.
           </p>
-          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-violet-400">
-            <span>FLEET & DOCKS</span>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-emerald-400">
+            <span>FLEET &amp; DOCKS</span>
             <span>→</span>
           </div>
         </div>
@@ -120,9 +130,9 @@
 
       <!-- Enter Environment Primary Button -->
       <div class="pt-4">
-        <button id="btnEnterDemo" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-emerald-400 hover:from-violet-500 hover:to-emerald-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-2xl glow-emerald flex items-center gap-3 mx-auto cursor-pointer font-chakra">
+        <button id="btnEnterDemo" aria-label="Enter Live Autonomous Warehouse Demo Environment" class="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-emerald-400 hover:from-violet-500 hover:to-emerald-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-2xl glow-emerald flex items-center gap-3 mx-auto cursor-pointer font-chakra">
           <span>ENTER DEMO ENVIRONMENT</span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </button>
         <p class="text-xs text-slate-400 mt-3 font-normal">Click any role card above or press the button to enter the live workspace.</p>
       </div>
@@ -136,11 +146,11 @@
   <div id="appContainer" class="hidden min-h-screen flex flex-col opacity-0 transition-opacity duration-300">
     
     <!-- TOP CLEAN NAVIGATION BAR -->
-    <header class="h-16 border-b border-slate-800/80 glass-panel sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between gap-4">
+    <header role="banner" aria-label="Top Operations Header" class="h-16 border-b border-slate-800/80 glass-panel sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between gap-4">
       
       <!-- Brand Logo & Title -->
       <div class="flex items-center gap-3 shrink-0">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-lg glow-emerald shadow-lg">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-lg glow-emerald shadow-lg" aria-hidden="true">
           ▲
         </div>
         <div>
@@ -154,8 +164,9 @@
       <!-- Center Global Search -->
       <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center">
         <div class="relative w-full">
-          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input id="topbarGlobalSearch" type="text" placeholder="Search orders, SKUs, batches, or bins..." class="w-full pl-10 pr-4 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 text-xs text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 transition-all font-sans">
+          <label for="topbarGlobalSearch" class="sr-only">Global Search Bar</label>
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="topbarGlobalSearch" type="text" placeholder="Search orders, SKUs, batches, or bins..." aria-label="Search orders, SKUs, batches, or bins" class="w-full pl-10 pr-4 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 text-xs text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400 transition-all font-sans">
         </div>
       </div>
 
@@ -163,20 +174,21 @@
       <div class="flex items-center gap-2.5 shrink-0">
         
         <!-- Clean Status Pill -->
-        <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono" role="status" aria-label="System operational, 12ms latency">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
           <span>System Live • 12ms</span>
         </div>
 
         <!-- Light / Slate Dark Theme Toggle Button -->
-        <button id="btnToggleTheme" class="px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 text-xs flex items-center gap-1.5 text-slate-200 transition-all cursor-pointer" title="Toggle Light / Dark Mode">
-          <span id="themeIcon">🌙</span>
+        <button id="btnToggleTheme" class="px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 text-xs flex items-center gap-1.5 text-slate-200 transition-all cursor-pointer" title="Toggle Light / Dark Mode" aria-label="Toggle between Dark Mode and Light Mode">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
           <span id="themeLabel" class="hidden sm:inline text-xs font-medium">Dark Mode</span>
         </button>
 
         <!-- Role Selector Dropdown -->
         <div class="flex items-center gap-1.5 bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs">
-          <select id="topbarRoleSelect" class="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer">
+          <label for="topbarRoleSelect" class="sr-only">Switch Active Role</label>
+          <select id="topbarRoleSelect" aria-label="Switch Active Warehouse Role" class="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer">
             <option value="Operations Manager" class="bg-slate-900 text-slate-200">Operations Manager</option>
             <option value="Floor Picker Operator" class="bg-slate-900 text-slate-200">Floor Picker Operator</option>
             <option value="Dispatch Supervisor" class="bg-slate-900 text-slate-200">Dispatch Supervisor</option>
@@ -184,14 +196,14 @@
         </div>
 
         <!-- Audio Mute/Unmute Toggle -->
-        <button id="btnToggleMute" class="p-2 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 text-xs flex items-center gap-1.5 text-slate-300 transition-all cursor-pointer" title="Toggle Sound Feedback">
-          <span id="soundIcon">
+        <button id="btnToggleMute" class="p-2 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 text-xs flex items-center gap-1.5 text-slate-300 transition-all cursor-pointer" title="Toggle Sound Feedback" aria-label="Toggle Acoustic Sound Feedback">
+          <span id="soundIcon" aria-hidden="true">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
           </span>
         </button>
 
         <!-- UTC Clock -->
-        <div id="topbarClock" class="font-mono text-xs text-emerald-400 px-2.5 py-1 rounded bg-slate-900/90 border border-emerald-500/30 hidden lg:block">
+        <div id="topbarClock" class="font-mono text-xs text-emerald-400 px-2.5 py-1 rounded bg-slate-900/90 border border-emerald-500/30 hidden lg:block" aria-label="Current UTC Clock Time">
           10:18:36 UTC
         </div>
       </div>
@@ -202,21 +214,21 @@
     <div class="flex-1 flex overflow-hidden">
       
       <!-- LEFT SIDEBAR MODULAR TAB SYSTEM -->
-      <aside class="w-64 border-r border-slate-800/80 glass-panel flex flex-col justify-between p-3 shrink-0 hidden md:flex">
-        <div class="space-y-1" id="sidebarNavMenu">
+      <aside role="complementary" aria-label="Warehouse Sidebar" class="w-64 border-r border-slate-800/80 glass-panel flex flex-col justify-between p-3 shrink-0 hidden md:flex">
+        <nav role="navigation" aria-label="Main Warehouse Navigation" class="space-y-1" id="sidebarNavMenu">
           <div class="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-400 font-bold font-mono">
             WAREHOUSE NAVIGATION
           </div>
 
           <!-- 1. Executive Dashboard -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all cursor-pointer bg-emerald-500/15 border-emerald-500/60 text-emerald-300 glow-emerald" data-tab="dashboard" data-roles="manager,picker,dispatch">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          <button id="tab-dashboard" role="tab" aria-selected="true" aria-controls="view-dashboard" aria-label="Executive Dashboard Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all cursor-pointer bg-emerald-500/15 border-emerald-500/60 text-emerald-300 glow-emerald" data-tab="dashboard" data-roles="manager,picker,dispatch">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
             <span>Executive Dashboard</span>
           </button>
 
           <!-- 2. What-If Simulator -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="simulator" data-roles="manager">
-            <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <button id="tab-simulator" role="tab" aria-selected="false" aria-controls="view-simulator" aria-label="What-If Simulator Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="simulator" data-roles="manager">
+            <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             <div class="flex items-center justify-between flex-1">
               <span>What-If Simulator</span>
               <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 glow-cyan">HOT</span>
@@ -224,41 +236,41 @@
           </button>
 
           <!-- 3. Inventory & Heatmap -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="inventory" data-roles="manager,picker">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-            <span>Inventory & Heatmap</span>
+          <button id="tab-inventory" role="tab" aria-selected="false" aria-controls="view-inventory" aria-label="Inventory and Heatmap Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="inventory" data-roles="manager,picker">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span>Inventory &amp; Heatmap</span>
           </button>
 
           <!-- 4. Digital Pick & QC -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="picking" data-roles="manager,picker">
-            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-            <span>Digital Pick & QC</span>
+          <button id="tab-picking" role="tab" aria-selected="false" aria-controls="view-picking" aria-label="Digital Pick and Quality Control Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="picking" data-roles="manager,picker">
+            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            <span>Digital Pick &amp; QC</span>
           </button>
 
           <!-- 5. Dock Doors & Fleet -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="dispatch" data-roles="manager,dispatch">
-            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            <span>Dock Doors & Fleet</span>
+          <button id="tab-dispatch" role="tab" aria-selected="false" aria-controls="view-dispatch" aria-label="Dock Doors and Fleet Management Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="dispatch" data-roles="manager,dispatch">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            <span>Dock Doors &amp; Fleet</span>
           </button>
 
           <!-- 6. Operational Analytics -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="analytics" data-roles="manager">
-            <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <button id="tab-analytics" role="tab" aria-selected="false" aria-controls="view-analytics" aria-label="Operational Analytics Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="analytics" data-roles="manager">
+            <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             <span>Operational Analytics</span>
           </button>
 
           <!-- 7. Audit & Requisitions -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="audit" data-roles="manager">
-            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Audit & Requisitions</span>
+          <button id="tab-audit" role="tab" aria-selected="false" aria-controls="view-audit" aria-label="Audit and Requisitions Tab" class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="audit" data-roles="manager">
+            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Audit &amp; Requisitions</span>
           </button>
-        </div>
+        </nav>
 
         <!-- Sidebar Footer Status -->
-        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-2">
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-2" role="status" aria-label="Swarm AGVs and System Status">
           <div class="flex items-center justify-between text-slate-400">
             <span>Swarm AGVs</span>
-            <span class="font-mono text-emerald-400 font-bold flex items-center gap-1.5"><span class="led-emerald"></span> 12 / 12 Active</span>
+            <span class="font-mono text-emerald-400 font-bold flex items-center gap-1.5"><span class="led-emerald" aria-hidden="true"></span> 12 / 12 Active</span>
           </div>
           <div class="flex items-center justify-between text-slate-400">
             <span>Core Logic</span>
@@ -268,12 +280,12 @@
       </aside>
 
       <!-- MAIN WORKSPACE CONTENT VIEW CONTAINERS -->
-      <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+      <main id="mainContent" role="main" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
 
         <!-- ================================================================= -->
         <!-- VIEW 0: OVERVIEW (EXECUTIVE DASHBOARD)                             -->
         <!-- ================================================================= -->
-        <div id="view-dashboard" class="view-pane space-y-6">
+        <section id="view-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" class="view-pane space-y-6">
           
           <!-- Overview Header with Create Order CTA -->
           <div class="flex items-center justify-between flex-wrap gap-4">
@@ -1406,7 +1418,8 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT MODULES -->
+  <!-- JAVASCRIPT MODULES & TEST HARNESS -->
+  <script src="js/security.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/state.js"></script>
   <script src="js/simulator.js"></script>
@@ -1417,6 +1430,7 @@
   <script src="js/analytics.js"></script>
   <script src="js/chatbot.js"></script>
   <script src="js/landing.js"></script>
+  <script src="js/tests.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
