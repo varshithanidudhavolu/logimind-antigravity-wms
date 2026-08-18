@@ -228,6 +228,12 @@ class DashboardModule {
     }
     if (elVelocity) elVelocity.textContent = stats.todayPicksCount;
 
+    // Update sidebar order count badge
+    const sidebarCount = document.getElementById('sidebarOrderCount');
+    if (sidebarCount) {
+      sidebarCount.textContent = `${activeOrders} Active`;
+    }
+
     // Update pipeline counts
     const stages = ['ALL', 'Order Created', 'Priority Scoring', 'Stock Allocation', 'Route Picking', 'QC & Packing', 'Dispatch Ready', 'Completed'];
     stages.forEach(stage => {

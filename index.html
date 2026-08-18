@@ -1151,7 +1151,7 @@
   <!-- ========================================================================= -->
   <!-- Floating Chatbot Launcher Button -->
   <div class="fixed bottom-6 right-6 z-40">
-    <button id="btnToggleChatbot" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-cyan-400 to-purple-600 text-slate-950 flex items-center justify-center text-2xl shadow-2xl glow-cyan hover:scale-110 transition-transform duration-300 relative cursor-pointer group">
+    <button id="btnToggleChatbot" onclick="if(window.chatbotModule){window.chatbotModule.toggleChat();}else{const d=document.getElementById('chatbotDrawer');if(d){const isH=d.classList.contains('hidden');if(isH){d.classList.remove('hidden');d.classList.add('flex');d.style.display='flex';}else{d.classList.add('hidden');d.classList.remove('flex');d.style.display='none';}}}" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-cyan-400 to-purple-600 text-slate-950 flex items-center justify-center text-2xl shadow-2xl glow-cyan hover:scale-110 transition-transform duration-300 relative cursor-pointer group">
       <span class="animate-bounce">🤖</span>
       <span id="chatUnreadBadge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white font-mono text-[10px] font-extrabold flex items-center justify-center border-2 border-slate-900">1</span>
     </button>
@@ -1174,7 +1174,7 @@
           <div class="text-[10px] font-mono text-slate-400">Autonomous Reasoning Engine</div>
         </div>
       </div>
-      <button id="btnCloseChatbot" class="text-slate-400 hover:text-white p-1 cursor-pointer">✕</button>
+      <button id="btnCloseChatbot" onclick="if(window.chatbotModule){window.chatbotModule.toggleChat(false);}else{const d=document.getElementById('chatbotDrawer');if(d){d.classList.add('hidden');d.classList.remove('flex');d.style.display='none';}}" class="text-slate-400 hover:text-white p-1 cursor-pointer">✕</button>
     </div>
 
     <!-- Messages Container -->
