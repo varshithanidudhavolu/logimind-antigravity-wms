@@ -47,16 +47,16 @@ class AnalyticsModule {
           label: 'Current Pick Velocity (Items / Hr)',
           data: [142, 385, 48, 192],
           backgroundColor: [
-            'rgba(6, 182, 212, 0.65)',
-            'rgba(16, 185, 129, 0.65)',
-            'rgba(139, 92, 246, 0.65)',
-            'rgba(245, 158, 11, 0.65)'
+            'rgba(0, 229, 255, 0.65)',
+            'rgba(0, 245, 160, 0.65)',
+            'rgba(123, 44, 191, 0.65)',
+            'rgba(255, 159, 28, 0.65)'
           ],
           borderColor: [
-            '#06b6d4',
-            '#10b981',
-            '#8b5cf6',
-            '#f59e0b'
+            '#00e5ff',
+            '#00f5a0',
+            '#9d4edd',
+            '#ff9f1c'
           ],
           borderWidth: 1.5,
           borderRadius: 8
@@ -68,10 +68,10 @@ class AnalyticsModule {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            titleColor: '#06b6d4',
+            backgroundColor: 'rgba(7, 9, 14, 0.96)',
+            titleColor: '#00f5a0',
             bodyColor: '#f1f5f9',
-            borderColor: 'rgba(51, 65, 85, 0.8)',
+            borderColor: 'rgba(123, 44, 191, 0.6)',
             borderWidth: 1,
             padding: 10,
             displayColors: false
@@ -79,12 +79,12 @@ class AnalyticsModule {
         },
         scales: {
           x: {
-            grid: { color: 'rgba(51, 65, 85, 0.2)' },
-            ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } }
+            grid: { color: 'rgba(123, 44, 191, 0.15)' },
+            ticks: { color: '#94a3b8', font: { family: 'Share Tech Mono', size: 10 } }
           },
           y: {
-            grid: { color: 'rgba(51, 65, 85, 0.2)' },
-            ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } }
+            grid: { color: 'rgba(123, 44, 191, 0.15)' },
+            ticks: { color: '#94a3b8', font: { family: 'Share Tech Mono', size: 10 } }
           }
         }
       }
@@ -112,12 +112,12 @@ class AnalyticsModule {
         datasets: [{
           data: [countElec, countFast, countHigh, countApp],
           backgroundColor: [
-            'rgba(6, 182, 212, 0.8)',
-            'rgba(16, 185, 129, 0.8)',
-            'rgba(139, 92, 246, 0.8)',
-            'rgba(245, 158, 11, 0.8)'
+            'rgba(0, 229, 255, 0.8)',
+            'rgba(0, 245, 160, 0.8)',
+            'rgba(157, 78, 221, 0.8)',
+            'rgba(255, 159, 28, 0.8)'
           ],
-          borderColor: '#0f172a',
+          borderColor: '#07090e',
           borderWidth: 3,
           hoverOffset: 6
         }]
@@ -131,14 +131,14 @@ class AnalyticsModule {
             position: 'bottom',
             labels: {
               color: '#94a3b8',
-              font: { family: 'Inter', size: 11 },
+              font: { family: 'Chakra Petch', size: 11 },
               boxWidth: 12,
               padding: 14
             }
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            borderColor: 'rgba(51, 65, 85, 0.8)',
+            backgroundColor: 'rgba(7, 9, 14, 0.96)',
+            borderColor: 'rgba(123, 44, 191, 0.6)',
             borderWidth: 1,
             padding: 10
           }
@@ -163,18 +163,18 @@ class AnalyticsModule {
           {
             label: 'Actual Dispatch Lead Time (Mins)',
             data: [42, 38, 55, 48, 35, 32, 28],
-            borderColor: '#06b6d4',
-            backgroundColor: 'rgba(6, 182, 212, 0.12)',
+            borderColor: '#00f5a0',
+            backgroundColor: 'rgba(0, 245, 160, 0.12)',
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: '#06b6d4',
+            pointBackgroundColor: '#00f5a0',
             pointRadius: 4,
             pointHoverRadius: 6
           },
           {
             label: 'SLA Target Benchmark (60 mins)',
             data: [60, 60, 60, 60, 60, 60, 60],
-            borderColor: 'rgba(239, 68, 68, 0.5)',
+            borderColor: 'rgba(255, 0, 85, 0.6)',
             borderDash: [5, 5],
             fill: false,
             pointRadius: 0
@@ -187,23 +187,23 @@ class AnalyticsModule {
         plugins: {
           legend: {
             position: 'top',
-            labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, boxWidth: 12 }
+            labels: { color: '#94a3b8', font: { family: 'Chakra Petch', size: 11 }, boxWidth: 12 }
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            borderColor: 'rgba(51, 65, 85, 0.8)',
+            backgroundColor: 'rgba(7, 9, 14, 0.96)',
+            borderColor: 'rgba(123, 44, 191, 0.6)',
             borderWidth: 1,
             padding: 10
           }
         },
         scales: {
           x: {
-            grid: { color: 'rgba(51, 65, 85, 0.2)' },
-            ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } }
+            grid: { color: 'rgba(123, 44, 191, 0.15)' },
+            ticks: { color: '#94a3b8', font: { family: 'Share Tech Mono', size: 10 } }
           },
           y: {
-            grid: { color: 'rgba(51, 65, 85, 0.2)' },
-            ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } }
+            grid: { color: 'rgba(123, 44, 191, 0.15)' },
+            ticks: { color: '#94a3b8', font: { family: 'Share Tech Mono', size: 10 } }
           }
         }
       }

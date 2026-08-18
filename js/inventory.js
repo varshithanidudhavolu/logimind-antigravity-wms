@@ -194,54 +194,54 @@ class InventoryModule {
       const isWarning = sku.onHand <= sku.safetyBuffer + 2;
 
       let stockBadge = `
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-          HEALTHY
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-tech font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 glow-emerald">
+          [ HEALTHY ]
         </span>
       `;
 
       if (isLowStock) {
         stockBadge = `
-          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse">
-            CRITICAL LOW
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-tech font-bold bg-rose-500/25 text-rose-400 border border-rose-500/50 animate-pulse glow-rose">
+            [ CRITICAL LOW ]
           </span>
         `;
       } else if (isWarning) {
         stockBadge = `
-          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-            BUFFER AT RISK
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-tech font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 glow-amber">
+            [ BUFFER RISK ]
           </span>
         `;
       }
 
       return `
-        <tr class="table-row-glow hover:bg-slate-800/40 border-b border-slate-800/60 transition-all">
+        <tr class="table-row-glow hover:bg-slate-900/60 border-b border-slate-800/80 transition-all">
           <td class="py-3 px-4">
-            <div class="font-mono font-bold text-cyan-400 flex items-center gap-2">
-              <span class="led-cyan"></span>
+            <div class="font-orbitron font-bold text-glow-emerald text-xs flex items-center gap-2">
+              <span class="led-emerald"></span>
               ${sku.id}
             </div>
-            <div class="text-[11px] text-slate-500 font-mono pl-4">Batch: ${sku.batch}</div>
+            <div class="text-[11px] text-slate-500 font-tech pl-4">Batch: ${sku.batch}</div>
           </td>
 
           <td class="py-3 px-4">
-            <div class="font-semibold text-slate-200">${sku.name}</div>
-            <div class="text-xs text-slate-400">${sku.category} &bull; Unit: $${sku.unitCost.toFixed(2)}</div>
+            <div class="font-semibold text-slate-200 font-chakra">${sku.name}</div>
+            <div class="text-xs text-slate-400 font-tech">${sku.category} &bull; Unit: $${sku.unitCost.toFixed(2)}</div>
           </td>
 
           <td class="py-3 px-4">
-            <div class="flex items-center gap-1.5 font-mono text-xs">
-              <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-semibold">${sku.zone}</span>
-              <span class="text-cyan-400">${sku.aisle}</span>
+            <div class="flex items-center gap-1.5 font-tech text-xs">
+              <span class="px-2 py-0.5 rounded bg-slate-950 border border-violet-500/40 text-violet-300 font-bold">${sku.zone}</span>
+              <span class="text-emerald-400 font-bold">${sku.aisle}</span>
             </div>
           </td>
 
-          <td class="py-3 px-4 font-mono">
-            <div class="text-base font-bold ${isLowStock ? 'text-rose-400' : 'text-slate-200'}">${sku.onHand} units</div>
-            <div class="text-[11px] text-slate-500">${sku.allocated} Allocated</div>
+          <td class="py-3 px-4 font-tech">
+            <div class="text-base font-orbitron font-bold ${isLowStock ? 'text-rose-400' : 'text-slate-100'}">${sku.onHand} units</div>
+            <div class="text-[11px] text-slate-400">${sku.allocated} Allocated</div>
           </td>
 
-          <td class="py-3 px-4 font-mono text-xs text-slate-400">
-            <div>${sku.safetyBuffer} units</div>
+          <td class="py-3 px-4 font-tech text-xs text-slate-400">
+            <div>${sku.safetyBuffer} buffer</div>
             <div class="text-[11px] text-slate-500">Exp: ${sku.expiry}</div>
           </td>
 
@@ -250,7 +250,7 @@ class InventoryModule {
           </td>
 
           <td class="py-3 px-4 text-right">
-            <button onclick="window.inventoryModule.openDamageModal('${sku.id}')" class="px-2.5 py-1 rounded bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold flex items-center gap-1 ml-auto transition-all cursor-pointer">
+            <button onclick="window.inventoryModule.openDamageModal('${sku.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 text-xs font-semibold flex items-center gap-1 ml-auto transition-all cursor-pointer font-tech">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
               Report Damage
             </button>

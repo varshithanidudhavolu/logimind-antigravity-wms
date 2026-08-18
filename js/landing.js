@@ -45,11 +45,11 @@ class LandingModule {
     const roleCards = document.querySelectorAll('.role-select-card');
     roleCards.forEach(card => {
       if (card.dataset.role === role) {
-        card.classList.add('border-cyan-500', 'bg-cyan-500/15', 'glow-cyan');
-        card.classList.remove('border-slate-700/60', 'bg-slate-900/60');
+        card.classList.add('border-emerald-400', 'bg-emerald-500/15', 'glow-emerald');
+        card.classList.remove('border-slate-800', 'bg-slate-950/60');
       } else {
-        card.classList.remove('border-cyan-500', 'bg-cyan-500/15', 'glow-cyan');
-        card.classList.add('border-slate-700/60', 'bg-slate-900/60');
+        card.classList.remove('border-emerald-400', 'bg-emerald-500/15', 'glow-emerald');
+        card.classList.add('border-slate-800', 'bg-slate-950/60');
       }
     });
 
@@ -87,7 +87,7 @@ class LandingModule {
           window.app.switchTab('dashboard');
         }
 
-        window.showToast('Demo Environment Active', `Logged in as ${this.selectedRole}. All 14 autonomous decision rules running live.`, 'cyan');
+        window.showToast('Matrix Environment Active', `Logged in as ${this.selectedRole}. All 14 autonomous decision rules running live.`, 'emerald');
       }, 400);
     }
   }
