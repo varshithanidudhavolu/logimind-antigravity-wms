@@ -205,58 +205,49 @@
       <aside class="w-64 border-r border-slate-800/80 glass-panel flex flex-col justify-between p-3 shrink-0 hidden md:flex">
         <div class="space-y-1" id="sidebarNavMenu">
           <div class="px-3 py-2 text-[10px] uppercase tracking-wider text-slate-400 font-bold font-mono">
-            Navigation Tabs
+            WAREHOUSE NAVIGATION
           </div>
 
-          <!-- Tab: Overview -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all cursor-pointer bg-emerald-500/15 border-emerald-500/60 text-emerald-300 glow-emerald" data-tab="dashboard" data-roles="manager">
+          <!-- 1. Executive Dashboard -->
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all cursor-pointer bg-emerald-500/15 border-emerald-500/60 text-emerald-300 glow-emerald" data-tab="dashboard" data-roles="manager,picker,dispatch">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-            <span>Overview</span>
+            <span>Executive Dashboard</span>
           </button>
 
-          <!-- Tab: Live Orders -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="orders" data-roles="manager,picker,dispatch">
-            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            <div class="flex items-center justify-between flex-1">
-              <span>Live Orders</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" id="sidebarOrderCount">6 Active</span>
-            </div>
-          </button>
-
-          <!-- Tab: Simulator -->
+          <!-- 2. What-If Simulator -->
           <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="simulator" data-roles="manager">
             <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             <div class="flex items-center justify-between flex-1">
               <span>What-If Simulator</span>
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300 border border-violet-500/40">SIMULATE</span>
+              <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 glow-cyan">HOT</span>
             </div>
           </button>
 
-          <!-- Tab: Fleet & Docks -->
-          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="dispatch" data-roles="manager,dispatch">
-            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            <span>Fleet & Docks</span>
-          </button>
-
-          <!-- Tab: Inventory & Heatmap -->
+          <!-- 3. Inventory & Heatmap -->
           <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="inventory" data-roles="manager,picker">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
             <span>Inventory & Heatmap</span>
           </button>
 
-          <!-- Tab: Pick, Pack & QC -->
+          <!-- 4. Digital Pick & QC -->
           <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="picking" data-roles="manager,picker">
             <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-            <span>Pick, Pack & QC</span>
+            <span>Digital Pick & QC</span>
           </button>
 
-          <!-- Tab: Operational Analytics -->
+          <!-- 5. Dock Doors & Fleet -->
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="dispatch" data-roles="manager,dispatch">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            <span>Dock Doors & Fleet</span>
+          </button>
+
+          <!-- 6. Operational Analytics -->
           <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="analytics" data-roles="manager">
             <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             <span>Operational Analytics</span>
           </button>
 
-          <!-- Tab: Audit & Requisitions -->
+          <!-- 7. Audit & Requisitions -->
           <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-900/80 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="audit" data-roles="manager">
             <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span>Audit & Requisitions</span>

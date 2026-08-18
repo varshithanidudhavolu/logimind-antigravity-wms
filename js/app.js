@@ -92,9 +92,9 @@ class Application {
       const tab = btn.dataset.tab;
       let isAllowed = true;
       if (role === 'Floor Picker Operator') {
-        isAllowed = ['picking', 'orders', 'inventory'].includes(tab);
+        isAllowed = ['picking', 'dashboard', 'inventory'].includes(tab);
       } else if (role === 'Dispatch Supervisor') {
-        isAllowed = ['dispatch', 'orders', 'inventory'].includes(tab);
+        isAllowed = ['dispatch', 'dashboard', 'inventory'].includes(tab);
       } else {
         isAllowed = true; // Operations Manager has full access
       }
@@ -107,9 +107,9 @@ class Application {
     });
 
     // Auto switch if currently in an unavailable tab
-    if (role === 'Floor Picker Operator' && !['picking', 'orders', 'inventory'].includes(this.currentTab)) {
+    if (role === 'Floor Picker Operator' && !['picking', 'dashboard', 'inventory'].includes(this.currentTab)) {
       this.switchTab('picking');
-    } else if (role === 'Dispatch Supervisor' && !['dispatch', 'orders', 'inventory'].includes(this.currentTab)) {
+    } else if (role === 'Dispatch Supervisor' && !['dispatch', 'dashboard', 'inventory'].includes(this.currentTab)) {
       this.switchTab('dispatch');
     }
   }
