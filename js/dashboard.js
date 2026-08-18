@@ -264,9 +264,12 @@ class DashboardModule {
     }
   }
 
-  renderOrdersTable() {
-    const tableBody = document.getElementById('dashboardOrdersTableBody');
-    if (!tableBody) return;
+    const tableBodies = [
+      document.getElementById('dashboardOrdersTableBody'),
+      document.getElementById('dedicatedOrdersTableBody')
+    ].filter(Boolean);
+
+    if (tableBodies.length === 0) return;
 
     let orders = [...window.WMSState.data.orders];
     const filter = window.WMSState.activeFilter;
@@ -286,28 +289,29 @@ class DashboardModule {
     }
 
     if (orders.length === 0) {
-      tableBody.innerHTML = `
+      const emptyHtml = `
         <tr>
           <td colspan="7" class="text-center py-10 text-slate-500">
             <svg class="w-10 h-10 mx-auto mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-            No orders found in stage: <span class="text-cyan-400 font-mono font-semibold">${filter}</span>
+            No orders found in stage: <span class="text-emerald-400 font-mono font-semibold">${filter}</span>
           </td>
         </tr>
       `;
+      tableBodies.forEach(tb => tb.innerHTML = emptyHtml);
       return;
     }
 
-    tableBody.innerHTML = orders.map(order => {
+    const rowsHtml = orders.map(order => {
       let priorityColor = 'emerald';
       if (order.priority >= 90) priorityColor = 'rose';
       else if (order.priority >= 70) priorityColor = 'amber';
 
-      let stageBadgeClass = 'bg-slate-900/80 text-slate-300 border-slate-700 font-tech';
-      if (order.stage === 'Route Picking') stageBadgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 glow-emerald font-tech';
-      else if (order.stage === 'QC & Packing') stageBadgeClass = 'bg-violet-500/20 text-violet-300 border-violet-500/50 glow-violet font-tech';
-      else if (order.stage === 'Dispatch Ready') stageBadgeClass = 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 glow-cyan font-tech';
-      else if (order.stage === 'Stock Allocation') stageBadgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/50 font-tech';
-      else if (order.stage === 'Completed') stageBadgeClass = 'bg-slate-800/40 text-slate-500 border-slate-700 font-tech';
+      let stageBadgeClass = 'bg-slate-900/80 text-slate-300 border-slate-700 font-mono';
+      if (order.stage === 'Route Picking') stageBadgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 glow-emerald font-mono';
+      else if (order.stage === 'QC & Packing') stageBadgeClass = 'bg-violet-500/20 text-violet-300 border-violet-500/50 glow-violet font-mono';
+      else if (order.stage === 'Dispatch Ready') stageBadgeClass = 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 glow-cyan font-mono';
+      else if (order.stage === 'Stock Allocation') stageBadgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/50 font-mono';
+      else if (order.stage === 'Completed') stageBadgeClass = 'bg-slate-800/40 text-slate-500 border-slate-700 font-mono';
 
       const itemsSummary = order.items.map(i => `${i.qty}x ${i.name} (${i.bin})`).join(', ');
 
@@ -315,34 +319,34 @@ class DashboardModule {
         <tr class="table-row-glow hover:bg-slate-900/60 border-b border-slate-800/80 transition-all group cursor-pointer" onclick="window.dashboardModule.handleRowClick('${order.id}')">
           <td class="py-3.5 px-4">
             <div class="flex items-center gap-2">
-              <span class="font-orbitron font-bold text-glow-emerald group-hover:text-emerald-300 text-xs">${order.id}</span>
+              <span class="font-mono font-bold text-emerald-400 group-hover:text-emerald-300 text-xs">${order.id}</span>
               ${order.slaUrgent ? '<span class="led-rose" title="Urgent SLA"></span>' : '<span class="led-emerald"></span>'}
             </div>
-            <div class="text-[11px] text-slate-500 font-tech">${order.dest}</div>
+            <div class="text-[11px] text-slate-400 font-mono">${order.dest}</div>
           </td>
 
           <td class="py-3.5 px-4 font-medium text-slate-200">
-            <div class="flex items-center gap-2 font-chakra">
+            <div class="flex items-center gap-2">
               <span>${order.customer}</span>
-              ${order.priority >= 85 ? '<span class="px-1.5 py-0.2 rounded bg-violet-500/25 border border-violet-500/50 text-[10px] font-tech text-violet-300 font-bold">VIP</span>' : ''}
+              ${order.priority >= 85 ? '<span class="px-1.5 py-0.2 rounded bg-violet-500/25 border border-violet-500/50 text-[10px] font-mono text-violet-300 font-bold">VIP</span>' : ''}
             </div>
-            <div class="text-xs text-slate-500 font-tech">${order.carrier}</div>
+            <div class="text-xs text-slate-400 font-mono">${order.carrier}</div>
           </td>
 
           <td class="py-3.5 px-4">
             <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-lg bg-${priorityColor}-500/20 border border-${priorityColor}-500/40 flex items-center justify-center font-orbitron font-bold text-xs text-${priorityColor}-400">
+              <div class="w-8 h-8 rounded-lg bg-${priorityColor}-500/20 border border-${priorityColor}-500/40 flex items-center justify-center font-mono font-bold text-xs text-${priorityColor}-400">
                 ${order.priority}
               </div>
-              <div class="text-xs font-tech text-slate-400">
-                ${order.priority >= 90 ? 'CRITICAL' : order.priority >= 70 ? 'HIGH' : 'STANDARD'}
+              <div class="text-xs text-slate-400">
+                ${order.priority >= 90 ? 'Critical' : order.priority >= 70 ? 'High' : 'Standard'}
               </div>
             </div>
           </td>
 
           <td class="py-3.5 px-4 max-w-xs">
-            <div class="text-xs text-slate-300 truncate font-chakra" title="${itemsSummary}">${itemsSummary}</div>
-            <div class="text-[11px] text-slate-500 font-tech">${order.items.length} Line Item(s) &bull; Value: $${order.value.toFixed(2)}</div>
+            <div class="text-xs text-slate-300 truncate" title="${itemsSummary}">${itemsSummary}</div>
+            <div class="text-[11px] text-slate-400">${order.items.length} Line Item(s) &bull; Value: $${order.value.toFixed(2)}</div>
           </td>
 
           <td class="py-3.5 px-4">
@@ -351,8 +355,8 @@ class DashboardModule {
             </span>
           </td>
 
-          <td class="py-3.5 px-4 font-tech text-xs">
-            <span class="${order.slaUrgent ? 'text-glow-amber font-bold animate-pulse' : 'text-slate-400'}">
+          <td class="py-3.5 px-4 font-mono text-xs">
+            <span class="${order.slaUrgent ? 'text-amber-400 font-bold animate-pulse' : 'text-slate-400'}">
               ⏱ ${order.slaTimer}
             </span>
           </td>
@@ -365,6 +369,8 @@ class DashboardModule {
         </tr>
       `;
     }).join('');
+
+    tableBodies.forEach(tb => tb.innerHTML = rowsHtml);
   }
 
   renderRowActionButtons(order) {

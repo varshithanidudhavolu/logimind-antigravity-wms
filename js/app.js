@@ -7,6 +7,7 @@ class Application {
   }
 
   init() {
+    this.initTheme();
     this.bindGlobalEvents();
     this.initClock();
     this.initToastContainer();
@@ -39,13 +40,78 @@ class Application {
         if (event === 'VIEW_CHANGED') {
           this.updateSidebarUI(payload);
         }
+        if (event === 'ROLE_CHANGED') {
+          this.applyRoleRestrictions(payload);
+        }
         if (['AUDIT_LOGGED', 'INVENTORY_UPDATED', 'ORDER_UPDATED', 'ORDER_CREATED'].includes(event)) {
           this.renderAuditLog();
         }
       });
+
+      // Apply initial role restrictions
+      this.applyRoleRestrictions(window.WMSState.activeRole);
     }
 
     this.renderAuditLog();
+  }
+
+  initTheme() {
+    const savedTheme = localStorage.getItem('logimind_theme') || 'dark';
+    if (savedTheme === 'light') {
+      document.body.classList.add('theme-light');
+      this.updateThemeUI('light');
+    } else {
+      document.body.classList.remove('theme-light');
+      this.updateThemeUI('dark');
+    }
+
+    const themeBtn = document.getElementById('btnToggleTheme');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const isLight = document.body.classList.toggle('theme-light');
+        const newTheme = isLight ? 'light' : 'dark';
+        localStorage.setItem('logimind_theme', newTheme);
+        this.updateThemeUI(newTheme);
+        if (typeof window.showToast === 'function') {
+          window.showToast(isLight ? 'Minimal Light Mode' : 'Slate Dark Mode', 'Theme updated for optimal viewing comfort.', 'emerald');
+        }
+      });
+    }
+  }
+
+  updateThemeUI(theme) {
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (icon) icon.textContent = theme === 'light' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'light' ? 'Light Mode' : 'Dark Mode';
+  }
+
+  applyRoleRestrictions(role) {
+    const allNavButtons = document.querySelectorAll('.nav-tab-btn');
+    allNavButtons.forEach(btn => {
+      const tab = btn.dataset.tab;
+      let isAllowed = true;
+      if (role === 'Floor Picker Operator') {
+        isAllowed = ['picking', 'orders', 'inventory'].includes(tab);
+      } else if (role === 'Dispatch Supervisor') {
+        isAllowed = ['dispatch', 'orders', 'inventory'].includes(tab);
+      } else {
+        isAllowed = true; // Operations Manager has full access
+      }
+
+      if (isAllowed) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    });
+
+    // Auto switch if currently in an unavailable tab
+    if (role === 'Floor Picker Operator' && !['picking', 'orders', 'inventory'].includes(this.currentTab)) {
+      this.switchTab('picking');
+    } else if (role === 'Dispatch Supervisor' && !['dispatch', 'orders', 'inventory'].includes(this.currentTab)) {
+      this.switchTab('dispatch');
+    }
   }
 
   bindGlobalEvents() {
@@ -77,9 +143,9 @@ class Application {
   }
 
   switchTab(tabName) {
-    window.soundEngine.playClick();
+    if (window.soundEngine) window.soundEngine.playClick();
     this.currentTab = tabName;
-    window.WMSState.setView(tabName);
+    if (window.WMSState) window.WMSState.setView(tabName);
 
     // Hide all view containers
     const viewContainers = document.querySelectorAll('.view-pane');
@@ -96,13 +162,15 @@ class Application {
     this.updateSidebarUI(tabName);
 
     // Specific on-tab-switch hooks
-    if (tabName === 'picking') {
+    if (tabName === 'picking' && window.pickingModule) {
       window.pickingModule.initCanvas();
       window.pickingModule.drawRoute();
-    } else if (tabName === 'analytics') {
+    } else if (tabName === 'analytics' && window.analyticsModule) {
       setTimeout(() => window.analyticsModule.initCharts(), 100);
-    } else if (tabName === 'dispatch') {
+    } else if (tabName === 'dispatch' && window.dispatchModule) {
       setTimeout(() => window.dispatchModule.initSignaturePad(), 100);
+    } else if (tabName === 'orders' && window.dashboardModule) {
+      window.dashboardModule.renderOrdersTable();
     }
   }
 
@@ -118,18 +186,20 @@ class Application {
         btn.classList.add('border-transparent', 'text-slate-400', 'hover:bg-slate-900/80');
       }
     });
+
+    // Update active orders count in sidebar
+    const countEl = document.getElementById('sidebarOrderCount');
+    if (countEl && window.WMSState) {
+      countEl.textContent = `${window.WMSState.data.orders.length} Active`;
+    }
   }
 
   updateMuteButtonUI(isMuted) {
     const icon = document.getElementById('soundIcon');
-    const label = document.getElementById('soundLabel');
     if (icon) {
       icon.innerHTML = isMuted 
         ? `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>`
         : `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>`;
-    }
-    if (label) {
-      label.textContent = isMuted ? 'Muted' : 'Audio On';
     }
     window.showToast(isMuted ? 'Audio Muted' : 'Audio Enabled', 'Tactile UI acoustic feedback changed.', 'slate');
   }
