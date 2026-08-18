@@ -104,10 +104,10 @@ class InventoryModule {
 
     container.innerHTML = zones.map(zone => {
       return `
-        <div class="glass-panel p-4 rounded-xl border border-slate-700/60 hover:border-${zone.color}-500/40 transition-all">
+        <div class="glass-panel hover-elevate p-4 rounded-xl border border-slate-700/60 transition-all">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-${zone.color}-400"></span>
+              <span class="led-${zone.color}"></span>
               <h4 class="text-xs font-bold font-heading text-slate-200">${zone.name}</h4>
             </div>
             <span class="text-[11px] font-mono text-slate-400">Temp: 21.4°C | Humidity: 42%</span>
@@ -125,7 +125,7 @@ class InventoryModule {
 
               return `
                 <div onclick="window.inventoryModule.inspectRack('${rack}', '${matchedSku ? matchedSku.id : ''}')" 
-                     class="p-2 rounded-lg border text-center cursor-pointer transition-all hover:scale-105 ${densityColor} flex flex-col justify-between h-18 group relative">
+                     class="p-2 rounded-lg border text-center cursor-pointer transition-all hover:scale-105 hover:border-${zone.color}-400 ${densityColor} flex flex-col justify-between h-18 group relative shadow-md">
                   <div class="flex justify-between items-center text-[10px] font-mono">
                     <span class="font-bold">${rack}</span>
                     <span>${densityPct}%</span>
@@ -214,10 +214,13 @@ class InventoryModule {
       }
 
       return `
-        <tr class="hover:bg-slate-800/40 border-b border-slate-800/60 transition-colors">
+        <tr class="table-row-glow hover:bg-slate-800/40 border-b border-slate-800/60 transition-all">
           <td class="py-3 px-4">
-            <div class="font-mono font-bold text-cyan-400">${sku.id}</div>
-            <div class="text-[11px] text-slate-500 font-mono">Batch: ${sku.batch}</div>
+            <div class="font-mono font-bold text-cyan-400 flex items-center gap-2">
+              <span class="led-cyan"></span>
+              ${sku.id}
+            </div>
+            <div class="text-[11px] text-slate-500 font-mono pl-4">Batch: ${sku.batch}</div>
           </td>
 
           <td class="py-3 px-4">

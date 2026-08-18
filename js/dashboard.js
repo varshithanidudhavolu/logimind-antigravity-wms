@@ -313,11 +313,11 @@ class DashboardModule {
       const itemsSummary = order.items.map(i => `${i.qty}x ${i.name} (${i.bin})`).join(', ');
 
       return `
-        <tr class="hover:bg-slate-800/40 border-b border-slate-800/60 transition-colors group cursor-pointer" onclick="window.dashboardModule.handleRowClick('${order.id}')">
+        <tr class="table-row-glow hover:bg-slate-800/40 border-b border-slate-800/60 transition-all group cursor-pointer" onclick="window.dashboardModule.handleRowClick('${order.id}')">
           <td class="py-3.5 px-4">
             <div class="flex items-center gap-2">
               <span class="font-mono font-bold text-cyan-400 group-hover:text-cyan-300">${order.id}</span>
-              ${order.slaUrgent ? '<span class="w-2 h-2 rounded-full bg-rose-500 animate-ping" title="Urgent SLA"></span>' : ''}
+              ${order.slaUrgent ? '<span class="led-rose" title="Urgent SLA"></span>' : '<span class="led-cyan"></span>'}
             </div>
             <div class="text-[11px] text-slate-500 font-mono">${order.dest}</div>
           </td>
