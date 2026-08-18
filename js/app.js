@@ -161,16 +161,27 @@ class Application {
 
     this.updateSidebarUI(tabName);
 
-    // Specific on-tab-switch hooks
-    if (tabName === 'picking' && window.pickingModule) {
-      window.pickingModule.initCanvas();
-      window.pickingModule.drawRoute();
-    } else if (tabName === 'analytics' && window.analyticsModule) {
-      setTimeout(() => window.analyticsModule.initCharts(), 100);
-    } else if (tabName === 'dispatch' && window.dispatchModule) {
-      setTimeout(() => window.dispatchModule.initSignaturePad(), 100);
+    // Specific on-tab-switch hooks to refresh data tables and canvas rendering
+    if (tabName === 'dashboard' && window.dashboardModule) {
+      window.dashboardModule.render();
     } else if (tabName === 'orders' && window.dashboardModule) {
       window.dashboardModule.renderOrdersTable();
+    } else if (tabName === 'simulator' && window.scenarioSimulator) {
+      window.scenarioSimulator.runSimulation();
+    } else if (tabName === 'inventory' && window.inventoryModule) {
+      window.inventoryModule.render();
+    } else if (tabName === 'picking' && window.pickingModule) {
+      window.pickingModule.render();
+      window.pickingModule.initCanvas();
+      window.pickingModule.drawRoute();
+    } else if (tabName === 'dispatch' && window.dispatchModule) {
+      window.dispatchModule.render();
+      setTimeout(() => window.dispatchModule.initSignaturePad(), 100);
+    } else if (tabName === 'analytics' && window.analyticsModule) {
+      window.analyticsModule.render();
+      setTimeout(() => window.analyticsModule.initCharts(), 100);
+    } else if (tabName === 'audit') {
+      this.renderAuditLog();
     }
   }
 

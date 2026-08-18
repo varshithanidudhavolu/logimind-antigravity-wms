@@ -298,6 +298,7 @@ class DashboardModule {
     }
   }
 
+  renderOrdersTable() {
     const tableBodies = [
       document.getElementById('dashboardOrdersTableBody'),
       document.getElementById('dedicatedOrdersTableBody')
