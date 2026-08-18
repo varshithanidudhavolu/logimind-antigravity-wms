@@ -38,6 +38,7 @@
 
 ### 3. 📊 Section 2: Executive Command Dashboard & Pipeline
 - **Real-Time KPI Cards**: Active Orders, On-Time Dispatch SLA % (98.4%), Space Utilization (84.2%), Active Bottlenecks, and Pick Velocity.
+- **✨ "+ Create New Order" Modal Action**: Place manual customer orders on-the-fly. Automatically allocates stock to the target SKU, generates a new Order ID, updates the Active Orders KPI, stages the card in the *Order Created* pipeline, and records the event in the audit trail.
 - **Interactive 7-Stage Fulfillment Pipeline**:
   $$\text{All} \longrightarrow \text{Created} \longrightarrow \text{Priority Scored} \longrightarrow \text{Allocated} \longrightarrow \text{Picking} \longrightarrow \text{QC \& Packing} \longrightarrow \text{Dispatch Ready}$$
   Clicking any phase filters active orders instantly with glowing indicators.

@@ -222,6 +222,72 @@ class StateStore {
     }
   }
 
+  // Create a new order manually
+  createOrder(orderParams) {
+    const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const { customer, tier, skuId, qty, priority = 80, slaHours = 4, carrier, dest } = orderParams;
+    const targetSku = this.data.skus.find(s => s.id === skuId) || this.data.skus[0];
+    const orderQty = Math.max(1, parseInt(qty, 10) || 1);
+
+    // Update allocated inventory for target SKU
+    if (targetSku) {
+      targetSku.allocated += orderQty;
+    }
+
+    const calculatedWeight = ((targetSku ? targetSku.weightKg : 0.5) * orderQty).toFixed(2);
+    let boxSize = 'Box M2 (30x20x15cm)';
+    if (calculatedWeight < 1.0) {
+      boxSize = 'Box S1 (20x15x10cm)';
+    } else if (calculatedWeight > 4.0) {
+      boxSize = 'Box L3 (40x30x25cm)';
+    }
+
+    const assignedCarrier = carrier || (
+      tier === 'VIP Priority' ? 'FedEx Priority' :
+      tier === 'Enterprise' ? 'DHL Express' : 'BlueDart Express'
+    );
+
+    const newOrder = {
+      id: orderId,
+      customer: customer || 'Autonomous Client Corp',
+      tier: tier || 'Standard',
+      priority: parseInt(priority, 10) || 75,
+      stage: 'Order Created',
+      carrier: assignedCarrier,
+      dest: dest || 'Austin Regional Distribution Bay',
+      slaTimer: `${String(slaHours).padStart(2, '0')}h 00m`,
+      slaUrgent: parseInt(priority, 10) >= 85,
+      boxSize: boxSize,
+      value: (targetSku ? targetSku.unitCost * orderQty : 450.00),
+      items: [
+        {
+          sku: targetSku.id,
+          name: targetSku.name,
+          qty: orderQty,
+          bin: targetSku.aisle,
+          zone: targetSku.zone,
+          picked: false,
+          weightKg: targetSku.weightKg
+        }
+      ],
+      qc: { visual: false, weight: false, cushion: false, approved: false, sealId: null }
+    };
+
+    // Prepend to orders array
+    this.data.orders.unshift(newOrder);
+
+    // Audit log
+    this.addAudit(`Manual Order ${orderId} created by ${this.activeRole}`);
+
+    // Notify listeners
+    this.notify('ORDER_CREATED', newOrder);
+    this.notify('ORDER_UPDATED', newOrder);
+    this.notify('INVENTORY_UPDATED', { sku: targetSku });
+    this.recalculateStats();
+
+    return newOrder;
+  }
+
   // Mark item picked
   pickItem(orderId, skuId) {
     const order = this.data.orders.find(o => o.id === orderId);

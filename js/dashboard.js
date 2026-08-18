@@ -41,6 +41,112 @@ class DashboardModule {
         window.showToast('Auto-Rerouting Deployed', 'AGV-03 & AGV-07 traffic rerouted via Bypass C-3. Bottleneck cleared.', 'emerald');
       });
     }
+
+    // Create New Order Modal triggers
+    const openOrderBtns = document.querySelectorAll('.btn-open-create-order-modal, #btnOpenCreateOrderModal, #btnOpenCreateOrderModalTable');
+    openOrderBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.openCreateOrderModal();
+      });
+    });
+
+    const closeOrderBtn = document.getElementById('btnCloseCreateOrderModal');
+    if (closeOrderBtn) {
+      closeOrderBtn.addEventListener('click', () => {
+        this.closeCreateOrderModal();
+      });
+    }
+
+    const cancelOrderBtn = document.getElementById('btnCancelCreateOrderModal');
+    if (cancelOrderBtn) {
+      cancelOrderBtn.addEventListener('click', () => {
+        this.closeCreateOrderModal();
+      });
+    }
+
+    const createOrderForm = document.getElementById('createOrderForm');
+    if (createOrderForm) {
+      createOrderForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleCreateOrderSubmit();
+      });
+    }
+
+    // Priority slider live update
+    const prioritySlider = document.getElementById('newOrderPriority');
+    const priorityVal = document.getElementById('newOrderPriorityVal');
+    if (prioritySlider && priorityVal) {
+      prioritySlider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        const slaHours = val >= 90 ? '0.5h (Flash SLA)' : val >= 80 ? '2h (Expedited)' : val >= 60 ? '4h (Standard)' : '8h (Economy)';
+        priorityVal.textContent = `${val} &bull; ${slaHours}`;
+      });
+    }
+  }
+
+  openCreateOrderModal() {
+    window.soundEngine.playClick();
+    const modal = document.getElementById('createOrderModal');
+    const skuSelect = document.getElementById('newOrderSku');
+    if (!modal || !skuSelect) return;
+
+    // Populate SKUs dynamically from live inventory
+    const skus = window.WMSState.data.skus;
+    skuSelect.innerHTML = skus.map(sku => {
+      const avail = sku.onHand - sku.allocated;
+      return `
+        <option value="${sku.id}">
+          ${sku.id} - ${sku.name} (${sku.zone} / ${sku.aisle}) &bull; Avail: ${avail} / On-Hand: ${sku.onHand} &bull; $${sku.unitCost.toFixed(2)}
+        </option>
+      `;
+    }).join('');
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  closeCreateOrderModal() {
+    const modal = document.getElementById('createOrderModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  handleCreateOrderSubmit() {
+    const customer = document.getElementById('newOrderCustomer').value.trim() || 'Tesla Energy Hub';
+    const tier = document.getElementById('newOrderTier').value;
+    const skuId = document.getElementById('newOrderSku').value;
+    const qty = parseInt(document.getElementById('newOrderQty').value, 10) || 5;
+    const priority = parseInt(document.getElementById('newOrderPriority').value, 10) || 85;
+    const carrier = document.getElementById('newOrderCarrier') ? document.getElementById('newOrderCarrier').value : null;
+    const dest = document.getElementById('newOrderDest') ? document.getElementById('newOrderDest').value.trim() : 'Austin, TX - Gigafactory 1';
+
+    const slaHours = priority >= 90 ? 1 : priority >= 80 ? 2 : priority >= 60 ? 4 : 8;
+
+    const newOrder = window.WMSState.createOrder({
+      customer,
+      tier,
+      skuId,
+      qty,
+      priority,
+      slaHours,
+      carrier,
+      dest
+    });
+
+    this.closeCreateOrderModal();
+
+    // Sound and Green Toast
+    window.soundEngine.playSuccess();
+    window.showToast(
+      'Order Successfully Placed',
+      `Order ${newOrder.id} successfully placed! Staged in [Order Created] & allocated ${qty}x ${skuId}.`,
+      'emerald'
+    );
+
+    // Refresh views and ensure user sees the order
+    this.render();
   }
 
   updatePipelineActiveState(activeStage) {
