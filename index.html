@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiMind Antigravity WMS - Next-Gen Autonomous Warehouse Co-Pilot</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#070a13',
+            slate: {
+              850: '#111827',
+              900: '#0f172a',
+              950: '#030712',
+            },
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+            },
+            emerald: {
+              400: '#34d399',
+              500: '#10b981',
+            },
+            amber: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+            },
+            rose: {
+              400: '#f87171',
+              500: '#ef4444',
+            },
+            purple: {
+              400: '#a78bfa',
+              500: '#8b5cf6',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Antigravity Obsidian Theme -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-obsidian text-slate-100 min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 0: LANDING PAGE & ROLE SELECTION INTERFACE (WELCOME SCREEN)      -->
+  <!-- ========================================================================= -->
+  <div id="landingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-obsidian bg-radial-gradient transition-all duration-500 overflow-y-auto">
+    <div class="max-w-4xl w-full text-center space-y-8 my-auto py-8">
+      
+      <!-- Top Pulse Badge -->
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/40 text-cyan-300 text-xs font-mono glow-cyan">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="font-bold text-emerald-400">🟢 System Online</span>
+        <span class="text-slate-500">|</span>
+        <span>14 Decision Rules Active</span>
+        <span class="text-slate-500">|</span>
+        <span>Latency: 12ms</span>
+      </div>
+
+      <!-- Hero Titles -->
+      <div class="space-y-3">
+        <h1 class="text-4xl md:text-6xl font-extrabold font-heading tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-cyan-400">
+          LogiMind Antigravity WMS
+        </h1>
+        <p class="text-base md:text-xl text-slate-400 max-w-2xl mx-auto font-light">
+          Next-Gen Autonomous Warehouse Decision & Fulfillment Co-Pilot. Instant stock reallocation, TSP route pathfinding, dynamic carrier matching, and sub-millisecond conflict resolution.
+        </p>
+      </div>
+
+      <!-- Role Selection Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-left pt-4">
+        <!-- Role 1: Operations Manager -->
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-cyan-500 bg-cyan-500/15 glow-cyan transition-all hover:-translate-y-1 duration-300 group" data-role="Operations Manager">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
+            ⚡
+          </div>
+          <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-cyan-300 transition-colors">Operations Manager</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Full executive radar, live "What-If" conflict simulation engine, space utilization, and automated supplier PO replenishment.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-cyan-400 font-semibold">
+            <span>DEFAULT ACTIVE</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Role 2: Floor Picker Operator -->
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-700/60 bg-slate-900/60 transition-all hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-500/10 duration-300 group" data-role="Floor Picker Operator">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
+            📦
+          </div>
+          <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-emerald-300 transition-colors">Floor Picker Operator</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Traveling Salesperson shortest-path map, interactive simulated Barcode/QR scanner, and 3-point QC packing station.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-emerald-400">
+            <span>PICK & PACK HUB</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Role 3: Dispatch Supervisor -->
+        <div class="role-select-card cursor-pointer p-6 rounded-2xl glass-panel border border-slate-700/60 bg-slate-900/60 transition-all hover:-translate-y-1 hover:border-purple-500/50 hover:bg-purple-500/10 duration-300 group" data-role="Dispatch Supervisor">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 mb-4 text-2xl group-hover:scale-110 transition-transform">
+            🚚
+          </div>
+          <h3 class="text-lg font-bold font-heading text-slate-100 group-hover:text-purple-300 transition-colors">Dispatch Supervisor</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Live Dock Doors 1-4, AI Carrier Matrix (FedEx, DHL, BlueDart), Shipping Manifest Generator, and Digital POD Signature pad.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-purple-400">
+            <span>FLEET & DOCKS</span>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enter Environment Primary Button -->
+      <div class="pt-4">
+        <button id="btnEnterDemo" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-cyan-400 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-slate-950 font-extrabold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-2xl glow-cyan flex items-center gap-3 mx-auto cursor-pointer">
+          <span>ENTER DEMO ENVIRONMENT</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </button>
+        <p class="text-[11px] font-mono text-slate-500 mt-3">Pressing button initializes reactive state store, Chart.js telemetry, and Web Audio synthesis.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN APPLICATION SHELL (SIDEBAR + TOPBAR + CONTENT VIEWCONTAINERS)        -->
+  <!-- ========================================================================= -->
+  <div id="appContainer" class="hidden min-h-screen flex flex-col opacity-0 transition-opacity duration-500 bg-obsidian bg-grid-pattern">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="h-16 border-b border-slate-800/80 glass-panel sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-slate-950 font-black text-lg glow-cyan">
+          ▲
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="font-extrabold font-heading text-slate-100 text-base tracking-tight">LogiMind <span class="text-cyan-400 font-mono text-xs font-semibold px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">ANTIGRAVITY</span></h2>
+          </div>
+          <div class="text-[10px] font-mono text-slate-400 hidden sm:block">Autonomous Warehouse OS v4.2</div>
+        </div>
+      </div>
+
+      <!-- Center Search & Role Selector -->
+      <div class="flex-1 max-w-xl mx-4 hidden md:flex items-center gap-3">
+        <div class="relative w-full">
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="topbarGlobalSearch" type="text" placeholder="Search orders, SKUs, batch codes, or rack bins..." class="w-full pl-10 pr-4 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/70 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
+        </div>
+      </div>
+
+      <!-- Right Actions: Role Selector, Sound Toggle, System Clock -->
+      <div class="flex items-center gap-3 shrink-0">
+        <!-- Role Selector Dropdown -->
+        <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <select id="topbarRoleSelect" class="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer">
+            <option value="Operations Manager" class="bg-slate-900 text-slate-200">Operations Manager</option>
+            <option value="Floor Picker Operator" class="bg-slate-900 text-slate-200">Floor Picker Operator</option>
+            <option value="Dispatch Supervisor" class="bg-slate-900 text-slate-200">Dispatch Supervisor</option>
+          </select>
+        </div>
+
+        <!-- Audio Mute/Unmute Button -->
+        <button id="btnToggleMute" class="p-2 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-cyan-500/40 text-xs flex items-center gap-1.5 text-slate-300 transition-all cursor-pointer" title="Toggle UI Sound Effects">
+          <span id="soundIcon">
+            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          </span>
+          <span id="soundLabel" class="hidden sm:inline font-mono text-[11px]">Audio On</span>
+        </button>
+
+        <!-- System Clock -->
+        <div id="topbarClock" class="font-mono text-xs text-cyan-300 px-2.5 py-1 rounded bg-slate-900/80 border border-slate-800 hidden lg:block">
+          10:18:36 UTC
+        </div>
+      </div>
+
+    </header>
+
+    <!-- MAIN BODY: SIDEBAR + CONTENT -->
+    <div class="flex-1 flex overflow-hidden">
+      
+      <!-- LEFT SIDEBAR NAVIGATION -->
+      <aside class="w-64 border-r border-slate-800/80 glass-panel flex flex-col justify-between p-3 shrink-0 hidden md:flex">
+        <div class="space-y-1">
+          <div class="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+            Warehouse Navigation
+          </div>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all cursor-pointer bg-cyan-500/15 border-cyan-500/50 text-cyan-300 glow-cyan" data-tab="dashboard">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <span>Executive Dashboard</span>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="simulator">
+            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <div class="flex items-center justify-between flex-1">
+              <span>What-If Simulator</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">HOT</span>
+            </div>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="inventory">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span>Inventory & Heatmap</span>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="picking">
+            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            <span>Digital Pick & QC</span>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="dispatch">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            <span>Dock Doors & Fleet</span>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="analytics">
+            <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Operational Analytics</span>
+          </button>
+
+          <button class="nav-tab-btn w-full px-3 py-2.5 rounded-xl border border-transparent text-xs font-semibold text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 flex items-center gap-3 transition-all cursor-pointer" data-tab="audit">
+            <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Audit & Requisitions</span>
+          </button>
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] space-y-2">
+          <div class="flex items-center justify-between text-slate-400">
+            <span>Swarm AGVs</span>
+            <span class="font-mono text-emerald-400 font-bold">12 / 12 Active</span>
+          </div>
+          <div class="flex items-center justify-between text-slate-400">
+            <span>Core Logic</span>
+            <span class="font-mono text-cyan-400 font-bold">Antigravity-v4.2</span>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-1 overflow-hidden">
+            <div class="h-full bg-cyan-400 w-full animate-pulse"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT VIEW P用於 -->
+      <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 0: EXECUTIVE COMMAND DASHBOARD                               -->
+        <!-- ================================================================= -->
+        <div id="view-dashboard" class="view-pane space-y-6">
+          
+          <!-- KPI Metric Cards Row -->
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            
+            <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 flex flex-col justify-between hover:border-cyan-500/40 transition-all">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Active Orders</span>
+                <span class="text-cyan-400 text-base">📋</span>
+              </div>
+              <div class="mt-2">
+                <div id="kpiActiveOrders" class="text-3xl font-bold font-mono text-slate-100">26</div>
+                <div class="text-[11px] text-cyan-400 font-medium mt-1">↑ 14% vs yesterday</div>
+              </div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>On-Time SLA %</span>
+                <span class="text-emerald-400 text-base">⏱</span>
+              </div>
+              <div class="mt-2">
+                <div id="kpiSlaRate" class="text-3xl font-bold font-mono text-emerald-400">98.4%</div>
+                <div class="text-[11px] text-slate-400 mt-1">Target benchmark: >95.0%</div>
+              </div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 flex flex-col justify-between hover:border-purple-500/40 transition-all">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Space Utilization</span>
+                <span class="text-purple-400 text-base">🏬</span>
+              </div>
+              <div class="mt-2">
+                <div id="kpiSpaceUtil" class="text-3xl font-bold font-mono text-purple-300">84.2%</div>
+                <div class="text-[11px] text-slate-400 mt-1">Optimal zone density</div>
+              </div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Active Bottlenecks</span>
+                <span class="text-amber-400 text-base">⚠️</span>
+              </div>
+              <div class="mt-2">
+                <div id="kpiBottlenecks" class="text-3xl font-bold font-mono text-amber-400">2</div>
+                <div class="text-[11px] text-amber-400/80 mt-1">Auto-mitigation available</div>
+              </div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 col-span-2 lg:col-span-1 flex flex-col justify-between hover:border-cyan-500/40 transition-all">
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Today's Pick Velocity</span>
+                <span class="text-cyan-400 text-base">⚡</span>
+              </div>
+              <div class="mt-2">
+                <div id="kpiPickVelocity" class="text-3xl font-bold font-mono text-cyan-300">1,428</div>
+                <div class="text-[11px] text-slate-400 mt-1">Items picked across 4 zones</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottleneck Radar Notification Banner -->
+          <div id="bottleneckBanner"></div>
+
+          <!-- Interactive Fulfillment Lifecycle Pipeline Filter Bar -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Interactive Fulfillment Lifecycle Pipeline</h3>
+              <span class="text-xs text-slate-500">Click any stage to filter active orders</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+              
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-cyan-500 bg-cyan-500/15 text-cyan-300 glow-cyan transition-all text-center" data-stage="ALL">
+                <div class="text-[10px] font-mono text-slate-400">STAGE 0</div>
+                <div class="text-xs font-bold truncate">All Orders</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="ALL">6</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Order Created">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 1</div>
+                <div class="text-xs font-bold truncate">Order Created</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Order Created">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Priority Scoring">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 2</div>
+                <div class="text-xs font-bold truncate">Priority Scored</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Priority Scoring">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Stock Allocation">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 3</div>
+                <div class="text-xs font-bold truncate">Stock Allocated</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Stock Allocation">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Route Picking">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 4</div>
+                <div class="text-xs font-bold truncate">Route Picking</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Route Picking">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="QC & Packing">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 5</div>
+                <div class="text-xs font-bold truncate">QC & Packing</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="QC & Packing">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Dispatch Ready">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 6</div>
+                <div class="text-xs font-bold truncate">Dispatch Ready</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Dispatch Ready">1</div>
+              </div>
+
+              <div class="pipeline-step cursor-pointer p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-400 hover:border-slate-500 transition-all text-center" data-stage="Completed">
+                <div class="text-[10px] font-mono text-slate-500">STAGE 7</div>
+                <div class="text-xs font-bold truncate">Completed</div>
+                <div class="pipeline-count font-mono font-bold text-xs mt-1" data-stage="Completed">0</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Master Orders Data Table -->
+          <div class="glass-panel rounded-2xl border border-slate-700/60 overflow-hidden">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-base text-slate-100 font-heading">Active Fulfillment Orders Queue</h3>
+                <span class="text-xs font-mono text-cyan-400 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">Live State Synced</span>
+              </div>
+              <div class="text-xs text-slate-400">
+                Auto-scoring priority based on SLA window and customer tier.
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-950/60 text-slate-400 font-mono border-b border-slate-800">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold">Order ID / Dest</th>
+                    <th class="py-3 px-4 font-semibold">Customer / Carrier</th>
+                    <th class="py-3 px-4 font-semibold">Priority</th>
+                    <th class="py-3 px-4 font-semibold">Items Required</th>
+                    <th class="py-3 px-4 font-semibold">Lifecycle Stage</th>
+                    <th class="py-3 px-4 font-semibold">SLA Window</th>
+                    <th class="py-3 px-4 font-semibold text-right">Action Gateway</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardOrdersTableBody" class="divide-y divide-slate-800/60 font-sans">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: LIVE "WHAT-IF" SCENARIO SIMULATOR (THE GAME-CHANGER)     -->
+        <!-- ================================================================= -->
+        <div id="view-simulator" class="view-pane hidden space-y-6">
+          
+          <!-- Header Banner -->
+          <div class="p-6 rounded-2xl glass-panel-glow border border-purple-500/40 relative overflow-hidden">
+            <div class="max-w-2xl space-y-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                <span>🧠 Antigravity Decision Simulator v4.2</span>
+              </div>
+              <h2 class="text-2xl md:text-3xl font-extrabold font-heading text-slate-100">Live "What-If" Custom Scenario Simulator</h2>
+              <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                Test custom warehouse inventory conflicts in real-time. Model multi-order priority contention (e.g. 10 Needed vs 7 Available vs 5 Low-Priority Held) and see instant decision logic flowcharts and automated PO triggers.
+              </p>
+            </div>
+          </div>
+
+          <!-- Simulator Control Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left: Inputs & Presets (5 cols) -->
+            <div class="lg:col-span-5 glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-5">
+              
+              <!-- Quick Presets -->
+              <div>
+                <label class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold block mb-2">Preset Scenarios</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <button class="sim-preset-btn p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500/60 text-xs text-left transition-all cursor-pointer" data-preset="classic">
+                    <div class="font-bold text-cyan-300">Classic Conflict</div>
+                    <div class="text-[11px] text-slate-400">10 Needed vs 7 Avail vs 5 Held</div>
+                  </button>
+                  <button class="sim-preset-btn p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-emerald-500/60 text-xs text-left transition-all cursor-pointer" data-preset="safe">
+                    <div class="font-bold text-emerald-300">Direct Safe</div>
+                    <div class="text-[11px] text-slate-400">6 Needed vs 10 Avail vs 4 Held</div>
+                  </button>
+                  <button class="sim-preset-btn p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-rose-500/60 text-xs text-left transition-all cursor-pointer" data-preset="deficit">
+                    <div class="font-bold text-rose-300">Severe Deficit</div>
+                    <div class="text-[11px] text-slate-400">20 Needed vs 4 Avail vs 6 Held</div>
+                  </button>
+                  <button class="sim-preset-btn p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-purple-500/60 text-xs text-left transition-all cursor-pointer" data-preset="surge">
+                    <div class="font-bold text-purple-300">Flash Peak Surge</div>
+                    <div class="text-[11px] text-slate-400">15 Needed vs 8 Avail vs 12 Held</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Inputs -->
+              <div class="space-y-4 pt-2 border-t border-slate-800">
+                <div>
+                  <div class="flex justify-between text-xs font-semibold mb-1">
+                    <span class="text-slate-200">Urgent Order Quantity Needed</span>
+                    <span class="text-cyan-400 font-mono">N = Units</span>
+                  </div>
+                  <input id="simUrgentNeeded" type="number" min="1" max="100" value="10" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm font-mono text-cyan-300 focus:outline-none focus:border-cyan-500">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-semibold mb-1">
+                    <span class="text-slate-200">Available Unallocated Stock</span>
+                    <span class="text-emerald-400 font-mono">A = Units</span>
+                  </div>
+                  <input id="simAvailableStock" type="number" min="0" max="100" value="7" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm font-mono text-emerald-300 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-semibold mb-1">
+                    <span class="text-slate-200">Low-Priority Order Held Stock</span>
+                    <span class="text-amber-400 font-mono">H = Units</span>
+                  </div>
+                  <input id="simHeldStock" type="number" min="0" max="100" value="5" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm font-mono text-amber-300 focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-semibold mb-1">
+                    <span class="text-slate-200">Priority Score Threshold</span>
+                    <span class="text-purple-400 font-mono font-bold" id="simPriorityThresholdVal">75</span>
+                  </div>
+                  <input id="simPriorityThreshold" type="range" min="1" max="100" value="75" class="w-full">
+                  <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
+                    <span>1 (Relaxed)</span>
+                    <span>50 (Balanced)</span>
+                    <span>100 (Strict High-SLA Only)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Execute Scenario Engine Button -->
+              <div class="pt-2 space-y-2">
+                <button id="btnExecSimulation" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-cyan-500 to-emerald-500 hover:from-purple-500 hover:to-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all shadow-xl glow-cyan flex items-center justify-center gap-2 cursor-pointer">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span>EXECUTE SCENARIO ENGINE</span>
+                </button>
+
+                <button id="btnApplySimToLive" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Commit Outcome to Live WMS State</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Right: Decision Flowchart & Impact Matrix (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+              
+              <!-- Result Header -->
+              <div id="simResultHeader" class="glass-panel p-4 rounded-2xl border border-slate-700/60"></div>
+
+              <!-- Live Matrix Cards -->
+              <div id="simMatrixContainer"></div>
+
+              <!-- Interactive Decision Flowchart Card -->
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-4">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Autonomous Decision Flowchart</h4>
+
+                <!-- Flowchart Node Graph -->
+                <div class="space-y-3 font-mono text-xs">
+                  
+                  <!-- Root Node: Available Check -->
+                  <div id="flowNodeAvailCheck" class="flow-node p-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <span>1. Check Unallocated Available Stock: <strong class="text-cyan-300">A >= N ?</strong></span>
+                    </div>
+                    <span class="text-[10px] text-slate-400">[Evaluated First]</span>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-4 border-l-2 border-slate-800">
+                    
+                    <!-- Direct Path Node -->
+                    <div id="flowNodeDirect" class="flow-node p-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-400">
+                      <div class="font-bold text-emerald-400 text-xs">IF YES (A >= N):</div>
+                      <div class="text-[11px] text-slate-300 mt-1">Direct Full Allocation. Zero stock revoked. No PO required.</div>
+                    </div>
+
+                    <!-- Reallocation Check Node -->
+                    <div id="flowNodeReallocCheck" class="flow-node p-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-400">
+                      <div class="font-bold text-amber-400 text-xs">IF NO: Check (A + H) >= N ?</div>
+                      <div class="text-[11px] text-slate-300 mt-1">Priority Rule (96 > 35) &bull; Can held stock cover shortfall?</div>
+                    </div>
+
+                  </div>
+
+                  <!-- Sub-branches -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-8 border-l-2 border-slate-800">
+                    
+                    <div id="flowNodeRevoke" class="flow-node p-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-400">
+                      <div class="font-bold text-cyan-400 text-xs">IF (A + H) >= N:</div>
+                      <div class="text-[11px] text-slate-300 mt-1">Revoke (N - A) units from Low-Priority. Fulfill Urgent 100%. Draft Supplier PO.</div>
+                    </div>
+
+                    <div id="flowNodeDeficit" class="flow-node p-3 rounded-xl border border-slate-700 bg-slate-900 text-slate-400">
+                      <div class="font-bold text-rose-400 text-xs">IF (A + H) < N:</div>
+                      <div class="text-[11px] text-slate-300 mt-1">Critical Deficit: Partial allocate (A+H). Trigger Emergency Expedited PO.</div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- Mathematical Step-by-Step Explanation -->
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Mathematical Execution Log</h4>
+                <ul id="simExplanationSteps" class="space-y-1"></ul>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: INVENTORY & ZONE HEATMAP                                  -->
+        <!-- ================================================================= -->
+        <div id="view-inventory" class="view-pane hidden space-y-6">
+          
+          <!-- Category Quick Metrics -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            
+            <div class="glass-panel p-4 rounded-xl border border-slate-700/60">
+              <span class="text-xs text-slate-400">Total Units On Hand</span>
+              <div id="invCountTotal" class="text-2xl font-bold font-mono text-slate-100 mt-1">967</div>
+              <span class="text-[11px] text-slate-500">Across 32 active bins</span>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-slate-700/60">
+              <span class="text-xs text-cyan-400">Zone A (Electronics)</span>
+              <div id="invCountElec" class="text-2xl font-bold font-mono text-cyan-300 mt-1">42</div>
+              <span class="text-[11px] text-slate-500">LiDAR & AI Modules</span>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-slate-700/60">
+              <span class="text-xs text-emerald-400">Zone B (Fasteners)</span>
+              <div id="invCountFast" class="text-2xl font-bold font-mono text-emerald-300 mt-1">535</div>
+              <span class="text-[11px] text-slate-500">Titanium & Carbon</span>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-slate-700/60">
+              <span class="text-xs text-purple-400">Zone C (High-Value)</span>
+              <div id="invCountHigh" class="text-2xl font-bold font-mono text-purple-300 mt-1">20</div>
+              <span class="text-[11px] text-slate-500">Cryo & Battery Packs</span>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-slate-700/60 col-span-2 md:col-span-1">
+              <span class="text-xs text-amber-400">Zone D (Apparel & ESD)</span>
+              <div id="invCountApp" class="text-2xl font-bold font-mono text-amber-300 mt-1">360</div>
+              <span class="text-[11px] text-slate-500">Kevlar & RFID Badges</span>
+            </div>
+
+          </div>
+
+          <!-- 2D Interactive Warehouse Zone Heatmap -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 class="text-base font-bold font-heading text-slate-100">Warehouse 2D Zone Density Heatmap</h3>
+                <p class="text-xs text-slate-400">Click any rack coordinate to inspect live SKU bin stock or report exceptions.</p>
+              </div>
+              <button class="btn-open-damage-modal px-3.5 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span>Report Damaged / Missing Item</span>
+              </button>
+            </div>
+
+            <div id="zoneHeatmapGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <!-- Master SKU Inventory Table -->
+          <div class="glass-panel rounded-2xl border border-slate-700/60 overflow-hidden">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-3">
+                <h3 class="font-bold text-base text-slate-100 font-heading">Master SKU Inventory Catalog</h3>
+                <select id="inventoryCategoryFilter" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2.5 py-1 text-slate-300 focus:outline-none focus:border-cyan-500">
+                  <option value="ALL">All Categories</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Fasteners">Fasteners</option>
+                  <option value="High-Value">High-Value</option>
+                  <option value="Apparel">Apparel & ESD</option>
+                </select>
+              </div>
+
+              <div class="relative w-64">
+                <input id="inventorySkuSearch" type="text" placeholder="Filter SKUs..." class="w-full pl-8 pr-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+                <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-950/60 text-slate-400 font-mono border-b border-slate-800">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold">SKU ID / Batch</th>
+                    <th class="py-3 px-4 font-semibold">Item Description</th>
+                    <th class="py-3 px-4 font-semibold">Location (Zone/Bin)</th>
+                    <th class="py-3 px-4 font-semibold">On Hand</th>
+                    <th class="py-3 px-4 font-semibold">Safety Buffer</th>
+                    <th class="py-3 px-4 font-semibold">Stock Health</th>
+                    <th class="py-3 px-4 font-semibold text-right">Exception Trigger</th>
+                  </tr>
+                </thead>
+                <tbody id="inventorySkuTableBody" class="divide-y divide-slate-800/60 font-sans">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: DIGITAL PICK, PACK & QUALITY CONTROL WORKFLOW             -->
+        <!-- ================================================================= -->
+        <div id="view-picking" class="view-pane hidden space-y-6">
+          
+          <!-- Top Order Picker Selector -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 text-xl font-bold">
+                🎯
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-100 font-heading">Digital Picker & QC Cockpit</h3>
+                <p class="text-xs text-slate-400">Shortest-path TSP visualizer and simulated barcode verification.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-mono text-slate-400 font-semibold">Select Order:</label>
+              <select id="pickingOrderSelect" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-1.5 text-cyan-300 font-mono font-bold focus:outline-none focus:border-cyan-500 cursor-pointer">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <!-- 2-Column Grid: Route Optimizer + Picking Checklist -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left: Route Optimizer Canvas (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+              
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">Traveling Salesperson (TSP) Shortest Pick Path</h4>
+                  </div>
+                  <span class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">Transit Time Saved: -38.4%</span>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div class="relative w-full h-[280px] rounded-xl bg-slate-950/80 border border-slate-800 overflow-hidden">
+                  <canvas id="routeOptimizerCanvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <div class="flex justify-between items-center text-[11px] font-mono text-slate-400 pt-1">
+                  <span>Start: Picker Depot → Zone A → Zone B → Zone C → QC Station</span>
+                  <span class="text-cyan-300">Total Distance: 142 meters</span>
+                </div>
+              </div>
+
+              <!-- Smart Box Recommender Card -->
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-base text-purple-400">📦</span>
+                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">AI Smart Box Recommender</h4>
+                  </div>
+                  <span id="smartBoxCarbon" class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">-18% CO₂ Packaging Footprint</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-700">
+                    <div class="text-[11px] text-slate-400">Recommended Box Size</div>
+                    <div id="smartBoxName" class="text-sm font-bold font-mono text-cyan-300 mt-0.5">Box M2 (Standard)</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-700">
+                    <div class="text-[11px] text-slate-400">Dimensions & Volume</div>
+                    <div id="smartBoxDims" class="text-xs font-mono text-slate-200 mt-0.5">30 x 20 x 15 cm</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-700">
+                    <div class="text-[11px] text-slate-400">Weight Verification</div>
+                    <div id="smartBoxWeight" class="text-xs font-mono text-slate-200 mt-0.5">Calculated: 2.40 kg</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right: Pick Items Checklist & QC Station (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+              
+              <!-- Item Checklist -->
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-4">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">Order Items Pick Checklist</h4>
+                  <button id="btnOpenScanner" class="px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                    <span>Launch Scanner</span>
+                  </button>
+                </div>
+
+                <!-- Progress -->
+                <div>
+                  <div class="flex justify-between text-xs text-slate-400 font-mono mb-1">
+                    <span>Pick Completion</span>
+                    <span id="pickingProgressText">0 / 2 Items Picked</span>
+                  </div>
+                  <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                    <div id="pickingProgressBar" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <!-- Items list -->
+                <div id="pickingItemsList" class="space-y-2.5"></div>
+              </div>
+
+              <!-- Quality Control (QC) Panel -->
+              <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-base text-purple-400">🛡️</span>
+                    <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">3-Point QC Inspection Gate</h4>
+                  </div>
+                  <span class="text-xs font-mono text-purple-300">Strict SLA Gate</span>
+                </div>
+
+                <!-- 3 QC Toggles -->
+                <div class="space-y-2.5">
+                  <label class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between cursor-pointer hover:border-cyan-500/40 transition-all">
+                    <div>
+                      <div class="text-xs font-bold text-slate-200">1. Visual & Label Inspection</div>
+                      <div class="text-[11px] text-slate-400">No exterior scratches, batch barcode readable</div>
+                    </div>
+                    <input id="qcCheckVisual" type="checkbox" class="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-800 border-slate-700 cursor-pointer">
+                  </label>
+
+                  <label class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between cursor-pointer hover:border-cyan-500/40 transition-all">
+                    <div>
+                      <div class="text-xs font-bold text-slate-200">2. Weight Tolerance Gate</div>
+                      <div class="text-[11px] text-slate-400">Actual scale reading within ±2% tare variance</div>
+                    </div>
+                    <input id="qcCheckWeight" type="checkbox" class="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-800 border-slate-700 cursor-pointer">
+                  </label>
+
+                  <label class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between cursor-pointer hover:border-cyan-500/40 transition-all">
+                    <div>
+                      <div class="text-xs font-bold text-slate-200">3. Cushioning & Packaging Seal</div>
+                      <div class="text-[11px] text-slate-400">Anti-static bubble wrap and void-fill secure</div>
+                    </div>
+                    <input id="qcCheckCushion" type="checkbox" class="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-800 border-slate-700 cursor-pointer">
+                  </label>
+                </div>
+
+                <div id="qcSealBadge"></div>
+
+                <button id="btnApproveSeal" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 text-slate-950 font-bold text-xs transition-all shadow-lg cursor-pointer">
+                  Approve & Seal Package
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 4: FLEET, DOCK DOORS & DISPATCH CENTER                       -->
+        <!-- ================================================================= -->
+        <div id="view-dispatch" class="view-pane hidden space-y-6">
+          
+          <!-- Dock Door Status Cards -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold font-heading text-slate-100">Live Dock Doors (Docks 1 to 4)</h3>
+              <span class="text-xs font-mono text-slate-400">Automated Bay Scheduling Active</span>
+            </div>
+            <div id="dockDoorsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+          </div>
+
+          <!-- AI Carrier Selection Matrix -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 class="text-base font-bold font-heading text-slate-100">AI Carrier Selection & Optimization Matrix</h3>
+                <p class="text-xs text-slate-400">Real-time dynamic rate and SLA comparison across integrated freight networks.</p>
+              </div>
+              <button id="btnAiCarrierMatch" class="px-3.5 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
+                <span>🤖 AI Auto-Match Best Carrier</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              <!-- FedEx -->
+              <div class="carrier-matrix-card cursor-pointer p-4 rounded-xl border border-cyan-500 bg-cyan-500/15 glow-cyan transition-all flex flex-col justify-between" data-carrier="FedEx Priority">
+                <div>
+                  <div class="flex justify-between items-center">
+                    <span class="font-extrabold text-sm text-cyan-300">FedEx Priority</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">RECOMMENDED</span>
+                  </div>
+                  <div class="text-xs text-slate-300 mt-2 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Rate:</span> <strong class="text-slate-100">$12.50 / kg</strong></div>
+                    <div class="flex justify-between"><span>Transit SLA:</span> <strong class="text-emerald-400">&lt;14 Hours</strong></div>
+                    <div class="flex justify-between"><span>Reliability:</span> <strong class="text-cyan-300">99.1%</strong></div>
+                  </div>
+                </div>
+                <button class="btn-select-carrier w-full mt-4 py-1.5 rounded bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition-all cursor-pointer" data-carrier="FedEx Priority">
+                  Select Carrier
+                </button>
+              </div>
+
+              <!-- DHL -->
+              <div class="carrier-matrix-card cursor-pointer p-4 rounded-xl border border-slate-700/60 bg-slate-900/60 transition-all flex flex-col justify-between hover:border-slate-500" data-carrier="DHL Express">
+                <div>
+                  <div class="flex justify-between items-center">
+                    <span class="font-extrabold text-sm text-slate-200">DHL Express</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">CRYO SPECIALIZED</span>
+                  </div>
+                  <div class="text-xs text-slate-300 mt-2 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Rate:</span> <strong class="text-slate-100">$14.20 / kg</strong></div>
+                    <div class="flex justify-between"><span>Transit SLA:</span> <strong class="text-emerald-400">&lt;12 Hours</strong></div>
+                    <div class="flex justify-between"><span>Reliability:</span> <strong class="text-purple-300">99.4%</strong></div>
+                  </div>
+                </div>
+                <button class="btn-select-carrier w-full mt-4 py-1.5 rounded bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition-all cursor-pointer" data-carrier="DHL Express">
+                  Select Carrier
+                </button>
+              </div>
+
+              <!-- BlueDart -->
+              <div class="carrier-matrix-card cursor-pointer p-4 rounded-xl border border-slate-700/60 bg-slate-900/60 transition-all flex flex-col justify-between hover:border-slate-500" data-carrier="BlueDart Express">
+                <div>
+                  <div class="flex justify-between items-center">
+                    <span class="font-extrabold text-sm text-slate-200">BlueDart Logistics</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">COST OPTIMIZED</span>
+                  </div>
+                  <div class="text-xs text-slate-300 mt-2 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Rate:</span> <strong class="text-emerald-400">$8.40 / kg</strong></div>
+                    <div class="flex justify-between"><span>Transit SLA:</span> <strong class="text-slate-300">24 Hours</strong></div>
+                    <div class="flex justify-between"><span>Reliability:</span> <strong class="text-amber-300">97.8%</strong></div>
+                  </div>
+                </div>
+                <button class="btn-select-carrier w-full mt-4 py-1.5 rounded bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition-all cursor-pointer" data-carrier="BlueDart Express">
+                  Select Carrier
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Staged Orders Ready for Shipping & Dispatch -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold font-heading text-slate-100">Orders Staged for Final Dispatch</h3>
+              <span class="text-xs text-slate-400">Generate shipping labels and collect digital Proof of Delivery</span>
+            </div>
+            <div id="dispatchReadyOrdersList" class="space-y-3"></div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 5: OPERATIONAL ANALYTICS                                     -->
+        <!-- ================================================================= -->
+        <div id="view-analytics" class="view-pane hidden space-y-6">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Chart 1: Picking Velocity -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">Zone Picking Velocity (Items / Hr)</h4>
+                <span class="text-xs font-mono text-cyan-400">Real-Time Sensor Telemetry</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="chartPickingSpeed"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 2: Inventory Distribution Donut -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">Inventory Category Distribution</h4>
+                <span class="text-xs font-mono text-purple-400">Active Stock Allocation</span>
+              </div>
+              <div class="h-64 relative">
+                <canvas id="chartInventoryDonut"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Chart 3: SLA Lead Time 24h Trend -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">24-Hour Dispatch SLA Lead Time (Minutes)</h4>
+                <p class="text-xs text-slate-400">Continuous benchmark against the 60-minute maximum dispatch threshold.</p>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30">Avg SLA: 36.4 mins</span>
+            </div>
+            <div class="h-72 relative">
+              <canvas id="chartSlaTrend"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 6: AUDIT LOG & REQUISITIONS                                  -->
+        <!-- ================================================================= -->
+        <div id="view-audit" class="view-pane hidden space-y-6">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- System Audit Trail -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold font-heading text-slate-100">Live Decision & Audit Trail</h3>
+                <span class="text-xs font-mono text-cyan-400">Immutable Log</span>
+              </div>
+              <div id="auditLogFeed" class="space-y-2 max-h-[500px] overflow-y-auto pr-1"></div>
+            </div>
+
+            <!-- Auto-Triggered Purchase Orders -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold font-heading text-slate-100">Automated PO Requisitions</h3>
+                <span class="text-xs font-mono text-emerald-400">Supplier Integration</span>
+              </div>
+              <div id="poRequisitionFeed" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 1: EMBEDDED AI OPERATIONS CHATBOT ("LogiBot AI")                 -->
+  <!-- ========================================================================= -->
+  <!-- Floating Chatbot Launcher Button -->
+  <div class="fixed bottom-6 right-6 z-40">
+    <button id="btnToggleChatbot" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-cyan-400 to-purple-600 text-slate-950 flex items-center justify-center text-2xl shadow-2xl glow-cyan hover:scale-110 transition-transform duration-300 relative cursor-pointer group">
+      <span class="animate-bounce">🤖</span>
+      <span id="chatUnreadBadge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white font-mono text-[10px] font-extrabold flex items-center justify-center border-2 border-slate-900">1</span>
+    </button>
+  </div>
+
+  <!-- Chatbot Drawer Widget -->
+  <div id="chatbotDrawer" class="hidden fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[540px] max-h-[calc(100vh-8rem)] glass-dropdown rounded-2xl border border-cyan-500/40 shadow-2xl flex-col z-40 overflow-hidden glow-cyan animate-float">
+    
+    <!-- Header -->
+    <div class="p-3.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-slate-950 font-bold text-sm">
+          ▲
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-slate-100 font-heading">LogiBot AI Co-Pilot</h4>
+          <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            Antigravity Cognitive Core Online
+          </span>
+        </div>
+      </div>
+      <button id="btnCloseChatbot" class="p-1 rounded text-slate-400 hover:text-slate-200 cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="chatbotMessagesList" class="flex-1 p-3.5 overflow-y-auto space-y-3 text-xs"></div>
+
+    <!-- Interactive Prompt Chips -->
+    <div class="px-3 py-2 bg-slate-950/80 border-t border-slate-800/80 shrink-0">
+      <div class="text-[10px] font-mono text-slate-400 mb-1.5">Suggested Inquiries:</div>
+      <div class="flex flex-wrap gap-1.5">
+        <button class="chat-prompt-chip px-2 py-1 rounded bg-slate-900 hover:bg-cyan-500/20 text-cyan-300 text-[10px] font-mono border border-slate-700 hover:border-cyan-500/40 transition-all cursor-pointer" data-query="Explain Conflict Resolution (10 vs 7 vs 5)">
+          💬 10 vs 7 vs 5 Conflict
+        </button>
+        <button class="chat-prompt-chip px-2 py-1 rounded bg-slate-900 hover:bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-slate-700 hover:border-amber-500/40 transition-all cursor-pointer" data-query="Show Active Bottlenecks in Zone A">
+          ⚠️ Zone Bottlenecks
+        </button>
+        <button class="chat-prompt-chip px-2 py-1 rounded bg-slate-900 hover:bg-rose-500/20 text-rose-300 text-[10px] font-mono border border-slate-700 hover:border-rose-500/40 transition-all cursor-pointer" data-query="What happens when an item is reported damaged?">
+          📦 Damage Protocol
+        </button>
+      </div>
+    </div>
+
+    <!-- Message Input Bar -->
+    <div class="p-2.5 bg-slate-900 border-t border-slate-800 flex items-center gap-2 shrink-0">
+      <input id="chatbotInput" type="text" placeholder="Ask LogiBot anything..." class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+      <button id="btnSendChatMessage" class="p-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all cursor-pointer shadow-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS CONTAINER                                                          -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal 1: Report Damaged / Missing Item Modal -->
+  <div id="damageReportModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-rose-500/40 max-w-md w-full shadow-2xl space-y-4 glow-rose">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">⚠️</div>
+          <h3 class="font-bold text-base text-slate-100 font-heading">Report Damaged / Missing Item</h3>
+        </div>
+        <button id="btnCloseDamageModal" class="text-slate-400 hover:text-slate-200 cursor-pointer">✕</button>
+      </div>
+
+      <form id="damageReportForm" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Select Target SKU & Bin:</label>
+          <select id="damageSkuSelect" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 font-mono focus:outline-none focus:border-cyan-500"></select>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Damaged / Missing Quantity:</label>
+          <input id="damageQtyInput" type="number" min="1" max="500" value="3" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 font-mono focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Root Cause Category:</label>
+          <select id="damageReasonSelect" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500">
+            <option value="Forklift Collision / Handling Damage">Forklift Collision / Handling Damage</option>
+            <option value="Water Leak / Environmental Humidity">Water Leak / Environmental Humidity</option>
+            <option value="Expired Shelf Life / Quality Degradation">Expired Shelf Life / Quality Degradation</option>
+            <option value="Inventory Mismatch / Lost In Bin">Inventory Mismatch / Lost In Bin</option>
+          </select>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] text-slate-400 space-y-1">
+          <div>&bull; Action will instantly decrement on-hand inventory.</div>
+          <div>&bull; If buffer drops below threshold, an Emergency Reorder PO will auto-generate.</div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer">
+          SUBMIT DAMAGE EXCEPTION
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Emergency PO Draft Trigger Modal -->
+  <div id="emergencyPoModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-rose-500/50 max-w-md w-full shadow-2xl space-y-4 glow-rose">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold">🚨</div>
+        <div>
+          <h3 class="font-bold text-base text-slate-100 font-heading">Emergency Purchase Order Triggered</h3>
+          <p class="text-xs text-rose-400">Inventory dropped below safety buffer threshold.</p>
+        </div>
+      </div>
+
+      <div id="emergencyPoDetails"></div>
+
+      <div class="flex gap-2">
+        <button id="btnCloseEmergencyPo" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer">
+          Dismiss
+        </button>
+        <button id="btnApproveEmergencyPo" class="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all shadow-lg cursor-pointer">
+          Approve PO Requisition
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Simulated Barcode / QR Scanner Viewfinder Modal -->
+  <div id="scannerModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-cyan-500/40 max-w-md w-full shadow-2xl space-y-4 glow-cyan text-center">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-slate-100 font-heading">Handheld Barcode / QR Scanner</h3>
+        <button id="btnCloseScanner" class="text-slate-400 hover:text-slate-200 cursor-pointer">✕</button>
+      </div>
+
+      <!-- Viewfinder box -->
+      <div class="relative w-full h-52 bg-slate-950 rounded-xl border-2 border-cyan-500/50 overflow-hidden flex flex-col items-center justify-center">
+        <div class="absolute inset-x-0 h-0.5 bg-cyan-400 animate-scanline shadow-[0_0_15px_#22d3ee]"></div>
+        
+        <!-- Corner brackets -->
+        <div class="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-cyan-400"></div>
+        <div class="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-cyan-400"></div>
+        <div class="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-cyan-400"></div>
+        <div class="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-cyan-400"></div>
+
+        <div class="font-mono text-xs text-cyan-300 font-bold mb-1">ALIGN BARCODE WITHIN FRAME</div>
+        <div class="text-[10px] text-slate-500 font-mono">Laser Engine Active &bull; 880Hz Audio Tone Ready</div>
+      </div>
+
+      <button id="btnSimulateBarcodeScan" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition-all shadow-xl cursor-pointer">
+        TRIGGER SCAN CAPTURE
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 4: Printable Shipping Manifest & Label Modal -->
+  <div id="printableLabelModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-panel p-6 rounded-2xl border border-slate-700 max-w-xl w-full shadow-2xl space-y-4 my-auto">
+      <div class="flex justify-between items-center no-print">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🖨️</span>
+          <h3 class="font-bold text-base text-slate-100 font-heading">Automated Shipping Manifest & Airbill</h3>
+        </div>
+        <button id="btnCloseManifestModal" class="text-slate-400 hover:text-slate-200 cursor-pointer">✕</button>
+      </div>
+
+      <div id="manifestLabelContent"></div>
+
+      <div class="flex justify-end gap-3 pt-2 no-print">
+        <button onclick="window.dispatchModule.closeManifestModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer">
+          Close
+        </button>
+        <button id="btnPrintShippingLabel" class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-lg flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Print Shipping Label (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Proof of Delivery (POD) Canvas Signature Modal -->
+  <div id="podSignatureModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-cyan-500/40 max-w-md w-full shadow-2xl space-y-4 glow-cyan">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="text-xl text-emerald-400">✍️</span>
+          <h3 class="font-bold text-base text-slate-100 font-heading">Digital Proof of Delivery (POD)</h3>
+        </div>
+        <button id="btnClosePodModal" class="text-slate-400 hover:text-slate-200 cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
+        <div>Order: <strong id="podModalOrderId" class="text-cyan-400 font-mono">ORD-9824</strong></div>
+        <div>Customer: <span id="podModalCustomer" class="text-slate-200">Amazon Robotics Hub</span></div>
+        <div>Destination: <span id="podModalDest" class="text-slate-400">Seattle, WA 98109</span></div>
+      </div>
+
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1">
+          <span>Recipient / Driver Signature:</span>
+          <button id="btnClearSignature" class="text-cyan-400 hover:underline cursor-pointer">Clear Pad</button>
+        </div>
+        <div class="rounded-xl border-2 border-dashed border-cyan-500/50 bg-slate-950 p-1 flex justify-center">
+          <canvas id="podSignatureCanvas" class="cursor-crosshair bg-slate-950 rounded-lg block"></canvas>
+        </div>
+        <div class="text-[10px] text-slate-500 text-center mt-1">Use mouse or finger to draw signature inside the box</div>
+      </div>
+
+      <button id="btnSubmitPod" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer">
+        CONFIRM PROOF OF DELIVERY & DISPATCH
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 6: Dock Bay Vehicle Assignment Modal -->
+  <div id="dockAssignModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-cyan-500/40 max-w-md w-full shadow-2xl space-y-4 glow-cyan">
+      <div class="flex justify-between items-center">
+        <h3 id="dockAssignTitle" class="font-bold text-base text-slate-100 font-heading">Assign Dock Bay</h3>
+        <button id="btnCloseDockModal" class="text-slate-400 hover:text-slate-200 cursor-pointer">✕</button>
+      </div>
+
+      <form id="dockAssignForm" class="space-y-3 text-xs">
+        <input type="hidden" id="dockAssignId" value="1">
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Vehicle / Truck Plate #:</label>
+          <input id="dockVehicleInput" type="text" value="TRK-8819" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 font-mono focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Assigned Carrier:</label>
+          <select id="dockCarrierSelect" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500">
+            <option value="FedEx Freight">FedEx Freight</option>
+            <option value="DHL Express">DHL Express</option>
+            <option value="BlueDart Logistics">BlueDart Logistics</option>
+            <option value="Autonomous Fleet">Autonomous Fleet</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Outbound Destination Hub:</label>
+          <input id="dockDestInput" type="text" value="Regional Airport Distribution Hub" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer">
+          CONFIRM BAY ASSIGNMENT
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT MODULES -->
+  <script src="js/audio.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/inventory.js"></script>
+  <script src="js/picking.js"></script>
+  <script src="js/dispatch.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/landing.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
